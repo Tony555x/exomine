@@ -1,0 +1,31 @@
+# Build output
+bin/
+obj/
+*.user
+*.suo
+
+# Rider & VS Code settings
+.idea/
+.vscode/
+
+# Visual Studio
+.vs/
+
+# ASP.NET Core secrets
+**/secrets.json
+
+# SQLite database file
+*.db
+*.sqlite
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# End
