@@ -1,7 +1,11 @@
+using exomine.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<MineContext>(opt => opt.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=ExoMine;Integrated Security=True;"));
 
 var app = builder.Build();
 
