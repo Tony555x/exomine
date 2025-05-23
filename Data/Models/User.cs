@@ -6,7 +6,12 @@ namespace exomine.Data.Models
     {
         [Key]
         public int Id { get; set; }
-        [MaxLength(50), MinLength(3)]
+        [Required]
+        [MinLength(3), MaxLength(50)]
         public string Username { get; set; } = String.Empty;
+        [Required]
+        public string PasswordHash { get; set; } = String.Empty;
+        
+        public List<UserGame> GamesPlayed { get; set; } = new List<UserGame>();
     }
 }
