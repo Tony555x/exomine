@@ -19,6 +19,9 @@ namespace exomine.Data.Models
         [Required]
         [MaxLength(300)]
         public string Revealed { get; set; } = String.Empty;
+        [Required]
+        [MaxLength(300)]
+        public string Known { get; set; } = String.Empty;
         public ICollection<UserGame> PlayedBy { get; set; } = new List<UserGame>();
     }
 }
