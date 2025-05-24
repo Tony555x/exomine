@@ -25,12 +25,13 @@ public class AccountController : Controller
             model.ErrorMessage = "Invalid username.";
             return View(model);
         }
-        if (BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+        if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
         {
-            model.ErrorMessage = "Invalid login.";
+            model.ErrorMessage = "Invalid password.";
             return View(model);
         }
         HttpContext.Session.SetInt32("UserId", user.Id);
+        HttpContext.Session.SetString("Username", user.Username);
         return RedirectToAction("Index", "Home");
     }
 
@@ -62,6 +63,7 @@ public class AccountController : Controller
         await _db.SaveChangesAsync();
 
         HttpContext.Session.SetInt32("UserId", user.Id);
+        HttpContext.Session.SetString("Username", user.Username);
         return RedirectToAction("Index", "Home");
     }
 
