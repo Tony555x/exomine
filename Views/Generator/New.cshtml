@@ -1,0 +1,33 @@
+@model NewGameViewModel
+
+<h2>Start New Game</h2>
+
+<form asp-action="New" method="post">
+    <div class="mb-3">
+        <label asp-for="Size" class="form-label"></label>
+        <input asp-for="Size" class="form-control" />
+        <span asp-validation-for="Size" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Difficulty" class="form-label"></label>
+        <input asp-for="Difficulty" class="form-control" />
+        <span asp-validation-for="Difficulty" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label"></label>
+        <select asp-for="Type" class="form-select">
+            <option value="square">Square</option>
+            <option value="tri">Triangle</option>
+            <option value="hex">Hexagon</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Start Game</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
