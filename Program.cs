@@ -1,4 +1,5 @@
 using exomine.Data;
+using exomine.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<GeneratorService>();
 
 var app = builder.Build();
 

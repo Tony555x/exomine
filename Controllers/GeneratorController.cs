@@ -29,7 +29,7 @@ namespace exomine.Controllers
             {
                 return View(model);
             }
-            User user = await _db.Users.Where(u => u.Id == HttpContext.Session.GetInt32("UserId")).FirstAsync();
+            User user = await _db.Users.Where(u => u.Id == HttpContext.Session.GetInt32("UserId")).FirstOrDefaultAsync();
             if (user == null) return RedirectToAction("Login", "Account");
             Game game = null;
             if (model.UseExisting)
