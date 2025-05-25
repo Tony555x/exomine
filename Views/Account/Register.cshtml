@@ -2,9 +2,21 @@
 
 <h2>Register</h2>
 <form method="post">
-    <input asp-for="Username" placeholder="Username" />
-    <input asp-for="Password" type="password" placeholder="Password" />
-    <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
-    <button type="submit">Register</button>
+    <div class="mb-3">
+        <label asp-for="Username" class="form-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label"></label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
     <p>@Model.ErrorMessage</p>
 </form>
