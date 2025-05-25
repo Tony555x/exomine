@@ -10,7 +10,8 @@ namespace exomine.Services.Data
         public Tile[,] Tiles { get; set; } = new Tile[0, 0];
         public int Mines{ get; set; }
         public int Size { get; set; }
-        public int Width{ get; set; }
+        public int RevealCount{ get; set; }
+        public int Width { get; set; }
         public int Height{ get; set; }
         public List<Tile> TileList { get; set; } = new List<Tile>();
         public void Init()
@@ -37,21 +38,23 @@ namespace exomine.Services.Data
                             if (x + dx >= 0 && x + dx < Width && y + dy >= 0 && y + dy < Height)
                             {
                                 Tiles[x, y].Adj.Add(Tiles[x + dx, y + dy]);
+                                Tiles[x, y].Empty++;
                             }
                         }
                     }
                 }
             }
             Random rng = new Random();
-            var shuffled = TileList.OrderBy(x => rng.Next()).ToList();
+            TileList=TileList.OrderBy(x => rng.Next()).ToList();
             for (int i = 0; i < Mines; i++)
             {
-                Tile t = shuffled[i];
+                Tile t = TileList[i];
                 t.Bomb = true;
                 for (int j = 0; j < t.Adj.Count; j++)
                 {
                     Tile t2 = t.Adj[j];
                     t2.Bombs++;
+                    t2.Empty--;
                 }
             }
         }
