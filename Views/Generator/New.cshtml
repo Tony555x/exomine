@@ -3,16 +3,11 @@
 <h2>Start New Game</h2>
 
 <form asp-action="New" method="post">
+
     <div class="mb-3">
         <label asp-for="Size" class="form-label"></label>
         <input asp-for="Size" class="form-control" />
         <span asp-validation-for="Size" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Difficulty" class="form-label"></label>
-        <input asp-for="Difficulty" class="form-control" />
-        <span asp-validation-for="Difficulty" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -25,9 +20,43 @@
         <span asp-validation-for="Type" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">Game Source</label>
+        <div class="form-check">
+            <input asp-for="UseExisting" class="form-check-input" type="radio" value="false" checked id="genNew" name="UseExisting" />
+            <label class="form-check-label" for="genNew">Generate New Game</label>
+        </div>
+        <div class="form-check">
+            <input asp-for="UseExisting" class="form-check-input" type="radio" value="true" id="loadExisting" name="UseExisting" />
+            <label class="form-check-label" for="loadExisting">Load from Database</label>
+        </div>
+    </div>
+
+    <div class="mb-3" id="minDifficultyBlock" style="display:none;">
+        <label asp-for="Difficulty" class="form-label">Minimum Difficulty</label>
+        <input asp-for="Difficulty" class="form-control" />
+        <span asp-validation-for="Difficulty" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-primary">Start Game</button>
 </form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        const radioButtons = document.querySelectorAll('input[name="UseExisting"]');
+        const minDiffBlock = document.getElementById('minDifficultyBlock');
+
+        function toggleMinDiffVisibility() {
+            const selected = document.querySelector('input[name="UseExisting"]:checked');
+            if (selected && selected.value === "true") {
+                minDiffBlock.style.display = "block";
+            } else {
+                minDiffBlock.style.display = "none";
+            }
+        }
+
+        radioButtons.forEach(rb => rb.addEventListener('change', toggleMinDiffVisibility));
+        toggleMinDiffVisibility();
+    </script>
 }
