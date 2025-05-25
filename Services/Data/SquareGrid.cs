@@ -35,7 +35,7 @@ namespace exomine.Services.Data
                     {
                         for (int dy = -1; dy <= 1; dy++)
                         {
-                            if (x + dx >= 0 && x + dx < Width && y + dy >= 0 && y + dy < Height)
+                            if (x + dx >= 0 && x + dx < Width && y + dy >= 0 && y + dy < Height && (dx != 0 || dy != 0))
                             {
                                 Tiles[x, y].Adj.Add(Tiles[x + dx, y + dy]);
                                 Tiles[x, y].Empty++;
