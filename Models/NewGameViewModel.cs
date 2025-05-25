@@ -10,6 +10,7 @@ namespace exomine.Models
         public int Size { get; set; }
 
         [Required]
+        [Range(0, 10000)]
         public int Difficulty { get; set; }
 
         [Required]
