@@ -24,11 +24,6 @@ namespace exomine.Services
                 ).OrderBy(g => g.Difficulty).FirstAsync();
             return game;
         }
-        async Task<Game> GenerateMin(int size, GridType type, int difficulty)
-        {
-            Game ng = GenerateRandom(size, type);
-            return ng;
-        }
         Game GenerateRandom(int size, GridType type)
         {
             IGrid? grid = new SquareGrid(size);
