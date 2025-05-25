@@ -24,7 +24,7 @@ namespace exomine.Services
                 ).OrderBy(g => g.Difficulty).FirstAsync();
             return game;
         }
-        Game GenerateRandom(int size, GridType type)
+        public Game GenerateRandom(int size, GridType type)
         {
             IGrid? grid = new SquareGrid(size);
             if (type == GridType.Square)

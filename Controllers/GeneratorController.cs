@@ -1,10 +1,21 @@
+using exomine.Data;
+using exomine.Data.Models;
 using exomine.Models;
+using exomine.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace exomine.Controllers
 {
     public class GeneratorController : Controller
     {
+        GeneratorService _gen;
+        MineContext _db;
+        public GeneratorController(MineContext mineContext,GeneratorService generatorService)
+        {
+            _db = mineContext;
+            _gen = generatorService;
+        }
         [HttpGet]
         public IActionResult New()
         {
@@ -12,14 +23,29 @@ namespace exomine.Controllers
         }
 
         [HttpPost]
-        public IActionResult New(NewGameViewModel model)
+        public async Task<IActionResult> New(NewGameViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            return RedirectToAction("Play", "Game", new { id = 1 });
+            User user = await _db.Users.Where(u => u.Id == HttpContext.Session.GetInt32("UserId")).FirstAsync();
+            if (user == null) return RedirectToAction("Login", "Account");
+            Game game = null;
+            if (model.UseExisting)
+            {
+                game = await _gen.GetGame(model.Size, model.Type, model.Difficulty, user);
+            }
+            else
+            {
+                game = _gen.GenerateRandom(model.Size, model.Type);
+                _db.Games.Add(game);
+                await _db.SaveChangesAsync();
+            }
+            GameIdModel gim=new GameIdModel();
+            gim.Game = game;
+            gim.GameId = game.Id;
+            return RedirectToAction("Play", "Game", gim);
         }
 
     }
