@@ -14,7 +14,7 @@ namespace exomine.Services
         {
             _db = mineContext;
         }
-        public async Task<Game> GetGame(int size, GridType type, int difficulty, User user)
+        public async Task<Game?> GetGame(int size, GridType type, int difficulty, User user)
         {
             Game game = await _db.Games.Where(g =>
                 g.Type == type &&
@@ -22,15 +22,14 @@ namespace exomine.Services
                 g.Difficulty >= difficulty &&
                 _db.UserGames.Any(ug => ug.GameId == g.Id && ug.UserId == user.Id)
                 ).OrderBy(g => g.Difficulty).FirstAsync();
-            if (game != null) return game;
-            return await GenerateMin(size, type, difficulty);
+            return game;
         }
         async Task<Game> GenerateMin(int size, GridType type, int difficulty)
         {
-            Game ng = await GenerateRandom(size, type);
+            Game ng = GenerateRandom(size, type);
             return ng;
         }
-        async Task<Game> GenerateRandom(int size, GridType type)
+        Game GenerateRandom(int size, GridType type)
         {
             IGrid? grid = new SquareGrid(size);
             if (type == GridType.Square)
@@ -52,7 +51,20 @@ namespace exomine.Services
                 t.Revealed = true;
                 t.Revealable = true;
             }
-            return new Game();//todo
+            Game game = new Game();
+            game.Type = type;
+            game.Size = size;
+            game.Difficulty = 100;
+            for (int y = 0; y < grid.Height; y++)
+            {
+                for (int x = 0; x < grid.Width; x++)
+                {
+                    game.Bombs += grid.Tiles[x, y].Bomb;
+                    game.Revealed += grid.Tiles[x, y].Revealed;
+                    game.Known += grid.Tiles[x, y].Known;
+                }
+            }
+            return game;
         }
         bool TrySolve(IGrid grid)
         {

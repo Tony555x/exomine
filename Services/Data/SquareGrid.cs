@@ -45,7 +45,7 @@ namespace exomine.Services.Data
                 }
             }
             Random rng = new Random();
-            TileList=TileList.OrderBy(x => rng.Next()).ToList();
+            TileList = TileList.OrderBy(x => rng.Next()).ToList();
             for (int i = 0; i < Mines; i++)
             {
                 Tile t = TileList[i];
