@@ -1,0 +1,20 @@
+@using exomine.Data.Models;
+@model GameViewModel
+@{
+    Game game=Model.Game;
+}
+<div id="game-container"></div>
+
+@section Scripts {
+    <script>
+        const data = {
+            size: @game.Size,
+            type: "@game.Type",
+            bombs: "@game.Bombs",
+            revealed: "@game.Revealed"
+            known: "@game.Known"
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="~/js/game.js"></script>
+}

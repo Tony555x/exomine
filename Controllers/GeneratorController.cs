@@ -42,9 +42,8 @@ namespace exomine.Controllers
                 _db.Games.Add(game);
                 await _db.SaveChangesAsync();
             }
-            GameIdModel gim=new GameIdModel();
+            GameViewModel gim=new GameViewModel();
             gim.Game = game;
-            gim.GameId = game.Id;
             return RedirectToAction("Play", "Game", gim);
         }
 
