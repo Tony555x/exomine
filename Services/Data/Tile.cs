@@ -22,13 +22,15 @@ namespace exomine.Services.Data
         {
             TempBomb = val;
             bool ok = true;
+            Console.WriteLine("Tile " + X + " " + Y + " : ");
             for (int j = 0; j < Adj.Count; j++)
             {
                 Tile t2 = Adj[j];
+                Console.WriteLine("  Sector " + t2.X + " " + t2.Y + " : Tiles: " + t2.Empty + "/" + t2.AdjCount + " Bombs: " + t2.RemainingBombs + "/" + t2.Bombs);
                 if (!t2.Known || !t2.Revealable || t2.Bomb) continue;
                 t2.Empty--;
                 if (val) t2.CurrentBombs++;
-                if (t2.RemainingBombs < t2.Empty) ok = false;
+                if (t2.RemainingBombs > t2.Empty) ok = false;
                 if (t2.RemainingBombs < 0) ok = false;
             }
             return ok;
@@ -39,8 +41,8 @@ namespace exomine.Services.Data
             {
                 Tile t2 = Adj[j];
                 if (!t2.Known || !t2.Revealable || t2.Bomb) continue;
-                t2.Empty--;
-                if (TempBomb) t2.CurrentBombs++;
+                t2.Empty++;
+                if (TempBomb) t2.CurrentBombs--;
             }
             TempBomb = false;
         }
@@ -52,7 +54,6 @@ namespace exomine.Services.Data
             for (int j = 0; j < Adj.Count; j++)
             {
                 Tile t2 = Adj[j];
-                if (t2.Bomb) continue;
                 t2.Empty--;
                 if (Bomb) t2.CurrentBombs++;
             }

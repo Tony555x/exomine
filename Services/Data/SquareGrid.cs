@@ -18,9 +18,9 @@ namespace exomine.Services.Data
                     TileList.Add(Tiles[x, y]);
                 }
             }
-            for (int y = 0; y < Height; y++)
+            for (int x = 0; x < Width; x++)
             {
-                for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
                 {
                     for (int dx = -1; dx <= 1; dx++)
                     {

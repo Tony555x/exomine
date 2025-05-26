@@ -35,7 +35,6 @@ namespace exomine.Services.Data
                 {
                     Tile t2 = t.Adj[j];
                     t2.Bombs++;
-                    t2.Empty--;
                 }
             }
         }
