@@ -29,7 +29,9 @@ namespace exomine.Controllers
             {
                 return View(model);
             }
-            User user = await _db.Users.Where(u => u.Id == HttpContext.Session.GetInt32("UserId")).FirstOrDefaultAsync();
+            int? userid = HttpContext.Session.GetInt32("UserId");
+            User user = null;
+            if (userid != null) user = await _db.Users.Where(u => u.Id == userid).FirstOrDefaultAsync();
             if (user == null) return RedirectToAction("Login", "Account");
             Game game = null;
             if (model.UseExisting)
@@ -42,9 +44,8 @@ namespace exomine.Controllers
                 _db.Games.Add(game);
                 await _db.SaveChangesAsync();
             }
-            GameViewModel gim=new GameViewModel();
-            gim.Game = game;
-            return RedirectToAction("Play", "Game", gim);
+            if (game == null) return View();
+            return RedirectToAction("Play", "Game", new { id = game.Id });
         }
 
     }
