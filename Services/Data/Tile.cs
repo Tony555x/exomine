@@ -22,11 +22,9 @@ namespace exomine.Services.Data
         {
             TempBomb = val;
             bool ok = true;
-            Console.WriteLine("Tile " + X + " " + Y + " : ");
             for (int j = 0; j < Adj.Count; j++)
             {
                 Tile t2 = Adj[j];
-                Console.WriteLine("  Sector " + t2.X + " " + t2.Y + " : Tiles: " + t2.Empty + "/" + t2.AdjCount + " Bombs: " + t2.RemainingBombs + "/" + t2.Bombs);
                 if (!t2.Known || !t2.Revealable || t2.Bomb) continue;
                 t2.Empty--;
                 if (val) t2.CurrentBombs++;

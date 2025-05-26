@@ -73,26 +73,6 @@ namespace exomine.Services
         }
         bool SolveStep(IGrid grid)
         {
-            Console.WriteLine("SolveStep");
-            for (int x = 0; x < grid.Width; x++)
-            {
-                for (int y = 0; y < grid.Width; y++)
-                {
-                    Tile t = grid.Tiles[x, y];
-                    int e = 0, b = 0, a=0, tb=0;
-                    for (int i = 0; i < t.Adj.Count; i++)
-                    {
-                        Tile t2 = t.Adj[i];
-                        a++;
-                        if (t2.Revealable == false) e++;
-                        if (t2.Bomb&&t2.Revealable) b++;
-                        if (t2.Bomb) tb++;
-                    }
-                    if (e != t.Empty) Console.WriteLine("empty: " + e + " = " + t.Empty);
-                    if (b != t.CurrentBombs) Console.WriteLine("bombs " + b + " = " + t.CurrentBombs);
-                    if (tb != t.Bombs) Console.WriteLine("totalbombs " + tb + " = " + t.Bombs);
-                }
-            }
             bool ok = false;
             if (grid.RemainingBombs == grid.RemainingTiles)
             {
@@ -150,8 +130,6 @@ namespace exomine.Services
                 {
                     ok = true;
                     grid.RevealTile(t, false);
-                    Console.WriteLine("Bomb: " + t.X + " " + t.Y);
-                    Console.WriteLine("Rel: " + rel.Count);
                     break;
                 }
                 Console.WriteLine();
@@ -159,8 +137,6 @@ namespace exomine.Services
                 {
                     ok = true;
                     grid.RevealTile(t, false);
-                    Console.WriteLine("Clear: " + t.X + " " + t.Y);
-                    Console.WriteLine("Rel: " + rel.Count);
                     break;
                 }
                 Console.WriteLine();
@@ -170,7 +146,6 @@ namespace exomine.Services
         bool Attempt(List<Tile> rel, int i, bool val)
         {
             Console.Write(i);
-            //if (i > 20) return false;
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);
