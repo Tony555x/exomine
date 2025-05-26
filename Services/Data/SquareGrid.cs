@@ -11,11 +11,14 @@ namespace exomine.Services.Data
         public int Mines{ get; set; }
         public int Size { get; set; }
         public int RevealCount{ get; set; }
+        public int UnrevealCount{ get{ return TileList.Count - RevealCount; } }
+        public int Remaining{ get; set; }
         public int Width { get; set; }
         public int Height{ get; set; }
         public List<Tile> TileList { get; set; } = new List<Tile>();
         public void Init()
         {
+            Remaining = Mines;
             Width = Size;
             Height = Size;
             Tiles = new Tile[Width, Height];

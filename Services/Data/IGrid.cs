@@ -4,7 +4,9 @@ namespace exomine.Services.Data
     {
         public int Size { get; set; }
         public int Mines{ get; set; }
-        public int RevealCount { get; set; }
+        public int RevealCount { get; set; } // ! TEMPORARY !
+        public int UnrevealCount{ get;}
+        public int Remaining{ get; set; } // ! TEMPORARY !
         public Tile[,] Tiles { get; set; } //X,Y
         public List<Tile> TileList{ get; set; }
         public int Width { get; set; }

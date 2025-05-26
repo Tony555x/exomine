@@ -2,6 +2,7 @@ namespace exomine.Services.Data
 {
     public class Tile(int x, int y)
     {
+        
         public int X { get; set; } = x;
         public int Y { get; set; } = y;
         public bool Bomb { get; set; }//is bomb?
