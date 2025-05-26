@@ -1,24 +1,12 @@
 namespace exomine.Services.Data
 {
-    public class SquareGrid : IGrid
+    public class SquareGrid : Grid
     {
-        public SquareGrid(int size)
+        public SquareGrid(int size) : base(size) { }
+        public override void CreateGrid()
         {
-            Size = size;
-            Mines = size * size * 2 / 5;
-        }
-        public Tile[,] Tiles { get; set; } = new Tile[0, 0];
-        public int Mines{ get; set; }
-        public int Size { get; set; }
-        public int RevealCount{ get; set; }
-        public int UnrevealCount{ get{ return TileList.Count - RevealCount; } }
-        public int Remaining{ get; set; }
-        public int Width { get; set; }
-        public int Height{ get; set; }
-        public List<Tile> TileList { get; set; } = new List<Tile>();
-        public void Init()
-        {
-            Remaining = Mines;
+            Bombs = Size * Size * 2 / 5;
+            RemainingBombs = Bombs;
             Width = Size;
             Height = Size;
             Tiles = new Tile[Width, Height];
@@ -45,19 +33,6 @@ namespace exomine.Services.Data
                             }
                         }
                     }
-                }
-            }
-            Random rng = new Random();
-            TileList = TileList.OrderBy(x => rng.Next()).ToList();
-            for (int i = 0; i < Mines; i++)
-            {
-                Tile t = TileList[i];
-                t.Bomb = true;
-                for (int j = 0; j < t.Adj.Count; j++)
-                {
-                    Tile t2 = t.Adj[j];
-                    t2.Bombs++;
-                    t2.Empty--;
                 }
             }
         }
