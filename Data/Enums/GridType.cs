@@ -2,8 +2,8 @@ namespace exomine.Data.Enums
 {
     public enum GridType
     {
-        Square = 0,
-        Triangle = 1,
-        Hexagon = 2
+        Hexagon = 0,
+        Square = 1,
+        Triangle = 2,
     }
 }

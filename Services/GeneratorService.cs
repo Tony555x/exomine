@@ -31,6 +31,10 @@ namespace exomine.Services
             {
                 grid = new SquareGrid(size);
             }
+            if (type == GridType.Hexagon)
+            {
+                grid = new HexagonGrid(size);
+            }
             grid.Init();
             while (true)
             {
@@ -76,6 +80,7 @@ namespace exomine.Services
             bool ok = false;
             if (grid.RemainingBombs == grid.RemainingTiles)
             {
+                //Console.WriteLine("BombFill: "+grid.RemainingBombs);
                 for (int i = 0; i < grid.TileList.Count; i++)
                 {
                     Tile t = grid.TileList[i];
@@ -88,6 +93,7 @@ namespace exomine.Services
             }
             if (grid.RemainingBombs == 0)
             {
+                //Console.WriteLine("ClearFill: "+grid.RemainingTiles);
                 for (int i = 0; i < grid.TileList.Count; i++)
                 {
                     Tile t = grid.TileList[i];
@@ -128,23 +134,26 @@ namespace exomine.Services
                 for (int j = 0; j < grid.TileList.Count; j++) grid.TileList[j].Lock = false;
                 if (!Attempt(rel, 0, false))
                 {
+                    //Console.WriteLine("Bomb: " + (t.X+1) + " " + (t.Y+1)+" rel: "+rel.Count);
                     ok = true;
                     grid.RevealTile(t, false);
                     break;
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
                 if (!Attempt(rel, 0, true))
                 {
+                    //Console.WriteLine("Clear: " + (t.X + 1) + " " + (t.Y + 1) + " rel: " + rel.Count);
                     ok = true;
                     grid.RevealTile(t, false);
                     break;
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
             }
             return ok;
         }
         bool Attempt(List<Tile> rel, int i, bool val)
         {
+            //Console.Write(i);
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);

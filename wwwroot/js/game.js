@@ -1,4 +1,4 @@
-let width,height, side ,grid, gameType, bombs, revealed;
+let width,height, side ,grid, gameType, bombs, revealed,remaining;
 let click=false, hold=false, tileClick=false,tileClickX=0,tileClickY=0;
 let r2,r3;
 let flag;
@@ -9,12 +9,17 @@ function setup() {
     let canvas = createCanvas(600, 600);
     canvas.parent('game-container');
     canvas.elt.addEventListener('contextmenu', e => e.preventDefault());
+    r2=Math.sqrt(2);
+    r3=Math.sqrt(3);
     if(data.type=="Square"){
         initSquareGrid();
     }
+    if(data.type=="Hexagon"){
+        initHexagonGrid();
+    }
+    remaining=Math.floor(width*height*2/5);
+    document.getElementById("rb").innerText=remaining;
     angleMode(DEGREES);
-    r2=Math.sqrt(2);
-    r3=Math.sqrt(3);
 }
 function initSquareGrid(){
     height=data.size;
@@ -47,6 +52,40 @@ function initSquareGrid(){
         }
     }
 }
+function initHexagonGrid(){
+    height=data.size;
+    width=data.size;
+    grid=[];
+    for(let i=0;i<height;i++){
+        let row=[];
+        for(let j=0;j<width;j++){
+            let t={bomb:0,revealed:0,known:0,adj:0};
+            if(data.bombs[i*width+j]=='1')t.bomb=1;
+            if(data.revealed[i*width+j]=='1')t.revealed=1;
+            if(data.known[i*width+j]=='1')t.known=1;
+            row.push(t);
+        }
+        grid.push(row);
+    }
+    side=600/(data.size+0.5)/r3;
+    for(let y=0;y<height;y++){
+        for(let x=0;x<width;x++){
+            if(grid[y][x].bomb){
+                for(let dx=-1;dx<=1;dx++){
+                    if(x+dx<0||x+dx>=width)continue;
+                    for(let dy=-1;dy<=1;dy++){
+                        if(y+dy<0||y+dy>=height)continue;
+                        if(dx==0&&dy==0)continue;
+                        if (x % 2 == 0 && dy == 1 && dx != 0) continue;
+                        if (x % 2 == 1 && dy == -1 && dx != 0) continue;
+                        grid[y+dy][x+dx].adj++;
+                    }
+                }
+            }
+        }
+    }
+
+}
 function draw(){
     background(255);
     if(click)click=false;
@@ -60,18 +99,43 @@ function draw(){
     if(click&&tileClickX!=-1){
         let t=grid[tileClickY][tileClickX]
         if(mouseButton===LEFT){
-            if(!t.flag)t.revealed=1;
+            if(!t.flag){
+                t.revealed=1;
+                if(t.bomb){
+                    remaining--;
+                    document.getElementById("rb").innerText=remaining;
+                }
+            }
         }
         if(mouseButton===RIGHT){
-            if(t.flag)t.flag=0;
-            else if(!t.revealed)t.flag=1;
+            if(t.flag){
+                t.flag=0;
+                remaining++;
+                document.getElementById("rb").innerText=remaining;
+            }
+            else if(!t.revealed){
+                t.flag=1;
+                remaining--;
+                document.getElementById("rb").innerText=remaining;
+            }
         }
     }
 }
 function drawGrid(){
+    if(data.type=="Hexagon"){
+        drawHexagonGrid();
+    }
     if(data.type=="Square"){
         drawSquareGrid();
     }
+}
+function drawHexagonGrid(){
+    for(let x=0;x<width;x++){
+        for(let y=0;y<height;y++){
+            drawTile(x*side*1.5+side,y*side*r3+r3/2*side*(1+x%2),0,6,x,y)
+        }
+    }
+
 }
 function drawSquareGrid(){
     for(let x=0;x<width;x++){
@@ -82,7 +146,7 @@ function drawSquareGrid(){
 
 }
 function drawTile(x,y,a,n,tileX,tileY){
-    let r=side/r2;
+    let r=side/2/sin(180/n);
     let t=360/n;
     stroke(0);
     for(let i=0;i<n;i++){

@@ -11,7 +11,7 @@ namespace exomine.Controllers
     {
         GeneratorService _gen;
         MineContext _db;
-        public GeneratorController(MineContext mineContext,GeneratorService generatorService)
+        public GeneratorController(MineContext mineContext, GeneratorService generatorService)
         {
             _db = mineContext;
             _gen = generatorService;
