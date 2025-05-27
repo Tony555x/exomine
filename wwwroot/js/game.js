@@ -1,6 +1,10 @@
 let width,height, side ,grid, gameType, bombs, revealed;
 let click=false, hold=false, tileClick=false,tileClickX=0,tileClickY=0;
 let r2,r3;
+let flag;
+function preload(){
+    flag=loadImage("/assets/flag.png")
+}
 function setup() {
     let canvas = createCanvas(600, 600);
     canvas.parent('game-container');
@@ -93,9 +97,14 @@ function drawTile(x,y,a,n,tileX,tileY){
     fill(0);
     let tile=grid[tileY][tileX];
     if(tile.revealed){
+        textSize(side/2);
         if(tile.bomb)text("B",x,y)
         else if(tile.known)text(tile.adj,x,y)
         else text("?",x,y)
+    }
+    if(tile.flag){
+        imageMode(CENTER);
+        image(flag, x, y, side, side);
     }
 }
 
