@@ -39,6 +39,10 @@ namespace exomine.Services
             {
                 grid = new TriangleGrid(size);
             }
+            if (type == GridType.RhombiTriHexagonal)
+            {
+                grid = new RhombiTriHexagonGrid(size);
+            }
             grid.Init();
             while (true)
             {
