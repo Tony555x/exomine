@@ -147,8 +147,8 @@ function initTriangleGrid(){
 
 }
 function initSquareTriHexGrid(){
-    height=data.size;
-    width=data.size;
+    height=data.size+data.size%2-1;
+    width=height;
     let offset=height*width;
     grid=[];
     altgrid=[];
@@ -177,6 +177,7 @@ function initSquareTriHexGrid(){
     side=600/(data.size+0.5)/r3;
     for(let x=0;x<width;x++){
         for(let y=0;y<height;y++){
+            let t=grid[y][x];
             for(let dx=-1;dx<=1;dx++){
                 for(let dy=-1;dy<=1;dy++){
                     if(x%4===0&&dy===1&&dx!==0)continue;
@@ -186,8 +187,14 @@ function initSquareTriHexGrid(){
                     if(x%4===3&&dy===1&&dx<0)continue;
                     if(x%4===3&&dy===-1&&dx>0)continue;
                     if(x+dx>=0&&x+dx<width&&y+dy>=0&&y+dy<height&&(dx!==0||dy!==0)){
-                        grid[y][x].adj.push(grid[y+dy][x+dx]);
-                        grid[y][x].eAdj++;
+                        let t2=grid[y+dy][x+dx];
+                        t.adj.push(t2);
+                        t.tAdj++;
+                        if(!t2.revealed)t.eAdj++;
+                        if(t2.bomb){
+                            t.tBomb++;
+                            t.rBomb++;
+                        }
                     }
                 }
             }
@@ -198,6 +205,7 @@ function initSquareTriHexGrid(){
         for(let y=0;y<height-1;y++){
             let v=y-y%2+1;
             let h=x*2+1;
+            let t=altgrid[y][x];
             for(let dx=-1;dx<=1;dx++){
                 for(let dy=-1;dy<=1;dy++){
                     if(x%2===0&&y%2===0&&dx+dy>0)continue;
@@ -205,10 +213,21 @@ function initSquareTriHexGrid(){
                     if(x%2===0&&y%2===1&&-dx-dy>0)continue;
                     if(x%2===1&&y%2===1&&dx-dy>0)continue;
                     if(h+dx>=0&&h+dx<width&&v+dy>=0&&v+dy<height){
-                        altgrid[y][x].adj.push(grid[v+dy][h+dx]);
-                        grid[v+dy][h+dx].eAdj++;
-                        grid[v+dy][h+dx].adj.push(altgrid[y][x]);
-                        altgrid[y][x].eAdj++;
+                        let t2=grid[v+dy][h+dx];
+                        t.adj.push(t2);
+                        t.tAdj++;
+                        if(!t2.revealed)t.eAdj++;
+                        if(t2.bomb){
+                            t.tBomb++;
+                            t.rBomb++;
+                        }
+                        t2.adj.push(t);
+                        t2.tAdj++;
+                        if(!t.revealed)t2.eAdj++;
+                        if(t.bomb){
+                            t2.tBomb++;
+                            t2.rBomb++;
+                        }
                     }
                 }
             }

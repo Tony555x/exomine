@@ -76,15 +76,17 @@ namespace exomine.Services.Data
                             {
                                 TileGridAlt[x, y].Adj.Add(TileGrid[h + dx, v + dy]);
                                 TileGridAlt[x, y].Empty++;
-                                TileGrid[h+dx, v+dy].Adj.Add(TileGrid[x, y]);
-                                TileGrid[h+dx, v+dy].Empty++;
+                                TileGrid[h + dx, v + dy].Adj.Add(TileGrid[x, y]);
+                                TileGrid[h + dx, v + dy].Empty++;
                             }
-                            
+
                         }
                     }
-                    
+
                 }
             }
+            Bombs = Tiles.Count * 2 / 5;
+            RemainingBombs = Bombs;
             //Console.WriteLine("AltGrid Adj ok");
         }
         public override Game Compress()
