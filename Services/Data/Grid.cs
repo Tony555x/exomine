@@ -48,5 +48,15 @@ namespace exomine.Services.Data
         {
             RevealTile(Tiles[x, y], perm);
         }
+        public void UnrevealTile(Tile t, bool perm)
+        {
+            t.Unreveal(perm);
+            RevealableTiles++;
+            if (t.Bomb) RemainingBombs--;
+        }
+        public void UnrevealTile(int x, int y, bool perm)
+        {
+            UnrevealTile(Tiles[x, y], perm);
+        }
     }
 }

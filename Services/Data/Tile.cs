@@ -56,5 +56,16 @@ namespace exomine.Services.Data
                 if (Bomb) t2.CurrentBombs++;
             }
         }
+        public void Unreveal(bool perm)
+        {
+            Revealable = false;
+            if (perm) Revealed = false;
+            for (int j = 0; j < Adj.Count; j++)
+            {
+                Tile t2 = Adj[j];
+                t2.Empty++;
+                if (Bomb) t2.CurrentBombs--;
+            }
+        }
     }
 }
