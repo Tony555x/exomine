@@ -44,22 +44,22 @@ namespace exomine.Services
             {
                 bool ok = TrySolve(grid);
                 if (ok) break;
-                Tile? t = grid.TileList.Where(t => t.Revealable && !t.Known && t.Adj.Any(t2 => !t2.Revealable)).FirstOrDefault();
+                Tile? t = grid.Tiles.Where(t => t.Revealable && !t.Known && t.Adj.Any(t2 => !t2.Revealable)).FirstOrDefault();
                 if (t != null)
                 {
                     t.Known = true;
                     continue;
                 }
-                t = grid.TileList.Where(t => !t.Revealable && !t.Bomb).FirstOrDefault();
+                t = grid.Tiles.Where(t => !t.Revealable && !t.Bomb).FirstOrDefault();
                 if (t == null)
                 {
                     continue;
                 }
                 grid.RevealTile(t, true);
             }
-            for (int i = 0; i < grid.TileList.Count; i++)
+            for (int i = 0; i < grid.Tiles.Count; i++)
             {
-                Tile t = grid.TileList[i];
+                Tile t = grid.Tiles[i];
                 if (!t.Revealed) continue;
                 grid.UnrevealTile(t, true);
                 grid.Clear();
@@ -70,9 +70,9 @@ namespace exomine.Services
                 }
                 //else Console.WriteLine("Trim Reveal");
             }
-            for (int i = 0; i < grid.TileList.Count; i++)
+            for (int i = 0; i < grid.Tiles.Count; i++)
             {
-                Tile t = grid.TileList[i];
+                Tile t = grid.Tiles[i];
                 if (!t.Known||t.Bomb) continue;
                 t.Known = false;
                 grid.Clear();
@@ -82,27 +82,15 @@ namespace exomine.Services
                     t.Known = true;
                 }
                 //else Console.WriteLine("Trim Known");
-            } 
-            Game game = new Game();
-            game.Type = type;
-            game.Size = size;
-            game.Difficulty = 100;
-            for (int y = 0; y < grid.Height; y++)
-            {
-                for (int x = 0; x < grid.Width; x++)
-                {
-                    game.Bombs += grid.Tiles[x, y].Bomb ? '1' : '0';
-                    game.Revealed += grid.Tiles[x, y].Revealed ? '1' : '0';
-                    game.Known += grid.Tiles[x, y].Known ? '1' : '0';
-                }
             }
+            Game game = grid.Compress();
             return game;
         }
         bool TrySolve(IGrid grid)
         {
             bool ok = SolveStep(grid);
             while (ok) ok = SolveStep(grid);
-            if (grid.RevealableTiles == grid.TileList.Count) return true;
+            if (grid.RevealableTiles == grid.Tiles.Count) return true;
             else return false;
         }
         bool SolveStep(IGrid grid)
@@ -111,9 +99,9 @@ namespace exomine.Services
             if (grid.RemainingBombs == grid.RemainingTiles)
             {
                 //Console.WriteLine("BombFill: "+grid.RemainingBombs);
-                for (int i = 0; i < grid.TileList.Count; i++)
+                for (int i = 0; i < grid.Tiles.Count; i++)
                 {
-                    Tile t = grid.TileList[i];
+                    Tile t = grid.Tiles[i];
                     if (t.Revealable == false)
                     {
                         grid.RevealTile(t, false);
@@ -124,9 +112,9 @@ namespace exomine.Services
             if (grid.RemainingBombs == 0)
             {
                 //Console.WriteLine("ClearFill: "+grid.RemainingTiles);
-                for (int i = 0; i < grid.TileList.Count; i++)
+                for (int i = 0; i < grid.Tiles.Count; i++)
                 {
-                    Tile t = grid.TileList[i];
+                    Tile t = grid.Tiles[i];
                     if (t.Revealable == false)
                     {
                         grid.RevealTile(t, false);
@@ -134,9 +122,9 @@ namespace exomine.Services
                 }
                 return false;
             }
-            for (int i = 0; i < grid.TileList.Count; i++)
+            for (int i = 0; i < grid.Tiles.Count; i++)
             {
-                Tile t = grid.TileList[i];
+                Tile t = grid.Tiles[i];
                 if (t.Revealable) continue;
                 if (!t.Adj.Any(t2 => t2.Known && t2.Revealable && !t2.Bomb)) continue;
                 List<Tile> rel = new List<Tile>();
@@ -161,7 +149,7 @@ namespace exomine.Services
                         }
                     }
                 }
-                for (int j = 0; j < grid.TileList.Count; j++) grid.TileList[j].Lock = false;
+                for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
                 if (!Attempt(rel, 0, false))
                 {
                     //Console.WriteLine("Bomb: " + (t.X+1) + " " + (t.Y+1)+" rel: "+rel.Count);

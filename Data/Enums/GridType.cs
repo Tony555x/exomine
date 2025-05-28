@@ -5,5 +5,6 @@ namespace exomine.Data.Enums
         Hexagon = 0,
         Square = 1,
         Triangle = 2,
+        RhombiTriHexagonal=3,
     }
 }

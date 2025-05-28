@@ -1,10 +1,7 @@
 namespace exomine.Services.Data
 {
-    public class Tile(int x, int y)
+    public class Tile()
     {
-
-        public int X { get; set; } = x;
-        public int Y { get; set; } = y;
         public bool Bomb { get; set; }//is bomb?
         public int Bombs { get; set; }//total adjacent bombs
         public int CurrentBombs { get; set; } = 0;//currently visible adjacent bombs
