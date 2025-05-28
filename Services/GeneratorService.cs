@@ -27,13 +27,17 @@ namespace exomine.Services
         public Game GenerateRandom(int size, GridType type)
         {
             IGrid? grid = new SquareGrid(size);
+            if (type == GridType.Hexagon)
+            {
+                grid = new HexagonGrid(size);
+            }
             if (type == GridType.Square)
             {
                 grid = new SquareGrid(size);
             }
-            if (type == GridType.Hexagon)
+            if (type == GridType.Triangle)
             {
-                grid = new HexagonGrid(size);
+                grid = new TriangleGrid(size);
             }
             grid.Init();
             while (true)
