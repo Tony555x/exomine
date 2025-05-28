@@ -157,7 +157,7 @@ namespace exomine.Services
         }
         bool Attempt(List<Tile> rel, int i, bool val)
         {
-            //Console.Write(i);
+            if (i > 20) return true;
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);
