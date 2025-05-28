@@ -57,6 +57,32 @@ namespace exomine.Services
                 }
                 grid.RevealTile(t, true);
             }
+            for (int i = 0; i < grid.TileList.Count; i++)
+            {
+                Tile t = grid.TileList[i];
+                if (!t.Revealed) continue;
+                grid.UnrevealTile(t, true);
+                grid.Clear();
+                bool ok = TrySolve(grid);
+                if (!ok)
+                {
+                    grid.RevealTile(t, true);
+                }
+                //else Console.WriteLine("Trim Reveal");
+            }
+            for (int i = 0; i < grid.TileList.Count; i++)
+            {
+                Tile t = grid.TileList[i];
+                if (!t.Known||t.Bomb) continue;
+                t.Known = false;
+                grid.Clear();
+                bool ok = TrySolve(grid);
+                if (!ok)
+                {
+                    t.Known = true;
+                }
+                //else Console.WriteLine("Trim Known");
+            } 
             Game game = new Game();
             game.Type = type;
             game.Size = size;
@@ -157,7 +183,7 @@ namespace exomine.Services
         }
         bool Attempt(List<Tile> rel, int i, bool val)
         {
-            if (i > 20) return true;
+            if (i > 20) return true; //i hope this isnt a bad idea
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);

@@ -7,13 +7,13 @@ namespace exomine.Services.Data
             Size = size;
         }
         public Tile[,] Tiles { get; set; } = new Tile[0, 0];
-        public int Bombs{ get; set; }
+        public int Bombs { get; set; }
         public int Size { get; set; }
-        public int RevealableTiles{ get; set; }
-        public int RemainingTiles{ get{ return TileList.Count - RevealableTiles; } }
-        public int RemainingBombs{ get; set; }
+        public int RevealableTiles { get; set; }
+        public int RemainingTiles { get { return TileList.Count - RevealableTiles; } }
+        public int RemainingBombs { get; set; }
         public int Width { get; set; }
-        public int Height{ get; set; }
+        public int Height { get; set; }
         public List<Tile> TileList { get; set; } = new List<Tile>();
 
         public void Init()
@@ -24,7 +24,7 @@ namespace exomine.Services.Data
         public abstract void CreateGrid();
         void ScatterMines()
         {
-            
+
             Random rng = new Random();
             TileList = TileList.OrderBy(x => rng.Next()).ToList();
             for (int i = 0; i < Bombs; i++)
@@ -51,12 +51,23 @@ namespace exomine.Services.Data
         public void UnrevealTile(Tile t, bool perm)
         {
             t.Unreveal(perm);
-            RevealableTiles++;
-            if (t.Bomb) RemainingBombs--;
+            RevealableTiles--;
+            if (t.Bomb) RemainingBombs++;
         }
         public void UnrevealTile(int x, int y, bool perm)
         {
             UnrevealTile(Tiles[x, y], perm);
+        }
+        public void Clear()
+        {
+            for (int i = 0; i < TileList.Count; i++)
+            {
+                Tile t = TileList[i];
+                if (t.Revealable && !t.Revealed)
+                {
+                    UnrevealTile(t, false);
+                }
+            }
         }
     }
 }

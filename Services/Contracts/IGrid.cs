@@ -14,5 +14,8 @@ namespace exomine.Services.Data
         public void Init();
         public void RevealTile(Tile t, bool perm);
         public void RevealTile(int x, int y, bool perm);
+        public void UnrevealTile(Tile t, bool perm);
+        public void UnrevealTile(int x, int y, bool perm);
+        public void Clear();
     }
 }
