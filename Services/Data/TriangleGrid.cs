@@ -46,7 +46,7 @@ namespace exomine.Services.Data
         public override Game Compress()
         {
             Game game = new Game();
-            game.Type = exomine.Data.Enums.GridType.Hexagon;
+            game.Type = exomine.Data.Enums.GridType.Triangle;
             game.Size = Size;
             game.Difficulty = 100;
             for (int y = 0; y < Height; y++)
