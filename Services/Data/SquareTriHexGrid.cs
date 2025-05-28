@@ -22,6 +22,7 @@ namespace exomine.Services.Data
                     Tiles.Add(TileGrid[x, y]);
                 }
             }
+            //Console.WriteLine("MainGrid ok");
             for (int y = 0; y < Height - 1; y++)
             {
                 for (int x = 0; x < Width / 2; x++)
@@ -30,6 +31,7 @@ namespace exomine.Services.Data
                     Tiles.Add(TileGridAlt[x, y]);
                 }
             }
+            //Console.WriteLine("AltGrid ok");
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -55,6 +57,7 @@ namespace exomine.Services.Data
                 }
                 //Console.WriteLine();
             }
+            //Console.WriteLine("MainGrid Adj ok");
             for (int x = 0; x < Width / 2; x++)
             {
                 for (int y = 0; y < Height - 1; y++)
@@ -72,8 +75,8 @@ namespace exomine.Services.Data
                             if (h + dx >= 0 && h + dx < Width && v + dy >= 0 && v + dy < Height)
                             {
                                 TileGridAlt[x, y].Adj.Add(TileGrid[h + dx, v + dy]);
-                                TileGrid[x, y].Empty++;
-                                TileGridAlt[h+dx, v+dy].Adj.Add(TileGrid[x, y]);
+                                TileGridAlt[x, y].Empty++;
+                                TileGrid[h+dx, v+dy].Adj.Add(TileGrid[x, y]);
                                 TileGrid[h+dx, v+dy].Empty++;
                             }
                             
@@ -82,11 +85,12 @@ namespace exomine.Services.Data
                     
                 }
             }
+            //Console.WriteLine("AltGrid Adj ok");
         }
         public override Game Compress()
         {
             Game game = new Game();
-            game.Type = exomine.Data.Enums.GridType.Hexagon;
+            game.Type = exomine.Data.Enums.GridType.SquareTriHex;
             game.Size = Size;
             game.Difficulty = 100;
             for (int y = 0; y < Height; y++)

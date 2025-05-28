@@ -151,6 +151,7 @@ function initSquareTriHexGrid(){
     width=data.size;
     let offset=height*width;
     grid=[];
+    altgrid=[];
     for(let i=0;i<height;i++){
         let row=[];
         for(let j=0;j<width;j++){
@@ -162,26 +163,53 @@ function initSquareTriHexGrid(){
         }
         grid.push(row);
     }
+    for(let i=0;i<height-1;i++){
+        let row=[];
+        for(let j=0;j<width/2;j++){
+            let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
+            if(data.bombs[i*width+j+offset]=='1')t.bomb=1;
+            if(data.revealed[i*width+j+offset]=='1')t.revealed=1;
+            if(data.known[i*width+j+offset]=='1')t.known=1;
+            row.push(t);
+        }
+        altgrid.push(row);
+    }
     side=600/(data.size+0.5)/r3;
-    for(let y=0;y<height;y++){
-        for(let x=0;x<width;x++){
-            let t=grid[y][x]
+    for(let x=0;x<width;x++){
+        for(let y=0;y<height;y++){
             for(let dx=-1;dx<=1;dx++){
-                if(x+dx<0||x+dx>=width)continue;
                 for(let dy=-1;dy<=1;dy++){
-                    if(y+dy<0||y+dy>=height)continue;
-                    if(dx==0&&dy==0)continue;
-                    if (x%2==0&&dy==1&&dx!=0)continue;
-                    if (x%2==1&&dy==-1&&dx!=0)continue;
-                    let t2=grid[y+dy][x+dx];
-                    t.adj.push(t2);
-                    t.tAdj++;
-                    if(!t2.revealed)t.eAdj++;
-                    if(t2.bomb){
-                        t.tBomb++;
-                        t.rBomb++;
+                    if(x%4===0&&dy===1&&dx!==0)continue;
+                    if(x%4===2&&dy===-1&&dx!==0)continue;
+                    if(x%4===1&&dy===1&&dx>0)continue;
+                    if(x%4===1&&dy===-1&&dx<0)continue;
+                    if(x%4===3&&dy===1&&dx<0)continue;
+                    if(x%4===3&&dy===-1&&dx>0)continue;
+                    if(x+dx>=0&&x+dx<width&&y+dy>=0&&y+dy<height&&(dx!==0||dy!==0)){
+                        grid[y][x].adj.push(grid[y+dy][x+dx]);
+                        grid[y][x].eAdj++;
                     }
+                }
+            }
+        }
+    }
 
+    for(let x=0;x<Math.floor(width/2);x++){
+        for(let y=0;y<height-1;y++){
+            let v=y-y%2+1;
+            let h=x*2+1;
+            for(let dx=-1;dx<=1;dx++){
+                for(let dy=-1;dy<=1;dy++){
+                    if(x%2===0&&y%2===0&&dx+dy>0)continue;
+                    if(x%2===1&&y%2===0&&-dx+dy>0)continue;
+                    if(x%2===0&&y%2===1&&-dx-dy>0)continue;
+                    if(x%2===1&&y%2===1&&dx-dy>0)continue;
+                    if(h+dx>=0&&h+dx<width&&v+dy>=0&&v+dy<height){
+                        altgrid[y][x].adj.push(grid[v+dy][h+dx]);
+                        grid[v+dy][h+dx].eAdj++;
+                        grid[v+dy][h+dx].adj.push(altgrid[y][x]);
+                        altgrid[y][x].eAdj++;
+                    }
                 }
             }
         }
@@ -250,7 +278,7 @@ function drawGrid(){
         drawTriangleGrid();
     }
     if(data.type=="SquareTriHex"){
-        drawTriangleGrid();
+        drawSquareTriHexGrid();
     }
 }
 function drawHexagonGrid(){
@@ -273,6 +301,30 @@ function drawTriangleGrid(){
     for(let x=0;x<width;x++){
         for(let y=0;y<height;y++){
             drawTile(x*side/2+side/2,y*side*r3/2+side*r3/3-side*r3/6*((x+y)%2),60*((x+y)%2)+30,3,grid[y][x])
+        }
+    }
+
+}
+function drawSquareTriHexGrid(){
+    for(let x=0;x<width;x++){
+        for(let y=0;y<height;y++){
+            let v=0;
+            if(x%4)v++;
+            if(x%4==2)v++;
+            let a=0;
+            if(x%2==0&&y%2==1)a=45;
+            if(x%2==1){
+                if((floor((x%4)/2)+y)%2)a=15;
+                else a=75;
+            }
+            let n=6;
+            if(x%2==1||y%2==1)n=4;
+            drawTile(
+                x*side*(3+r3)/4+side,
+                y*side*(r3+1)/2+side*r3/2+(1+r3)*v*side/4,
+                a,
+                n,
+                grid[y][x])
         }
     }
 
