@@ -2,9 +2,9 @@ using exomine.Data.Models;
 
 namespace exomine.Services.Data
 {
-    public class RhombiTriHexagonGrid : Grid
+    public class SquareTriHexGrid : Grid
     {
-        public RhombiTriHexagonGrid(int size) : base(size) { }
+        public SquareTriHexGrid(int size) : base(size) { }
 
         public Tile[,] TileGrid { get; set; } = new Tile[0, 0];
         public Tile[,] TileGridAlt { get; set; } = new Tile[0, 0];

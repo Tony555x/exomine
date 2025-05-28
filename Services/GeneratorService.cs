@@ -39,9 +39,9 @@ namespace exomine.Services
             {
                 grid = new TriangleGrid(size);
             }
-            if (type == GridType.RhombiTriHexagonal)
+            if (type == GridType.SquareTriHex)
             {
-                grid = new RhombiTriHexagonGrid(size);
+                grid = new SquareTriHexGrid(size);
             }
             grid.Init();
             while (true)
