@@ -1,5 +1,5 @@
 let width,height, side ,grid,altgrid, gameType, bombs, revealed,remaining;
-let click=false, hold=false, tileClicked=false;
+let click=false, hold=false, tileHover=null,th=false;
 let r2,r3;
 let flag;
 function preload(){
@@ -168,7 +168,7 @@ function initSquareTriHexGrid(){
     for(let i=0;i<height-1;i++){
         let row=[];
         for(let j=0;j<width/2;j++){
-            let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
+            let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[],hl:false};
             if(data.bombs[i*floor(width/2)+j+offset]=='1')t.bomb=1;
             if(data.revealed[i*floor(width/2)+j+offset]=='1')t.revealed=1;
             if(data.known[i*floor(width/2)+j+offset]=='1')t.known=1;
@@ -245,10 +245,16 @@ function draw(){
         click=true;
     }
     if(!mouseIsPressed)hold=false;
-    tileClicked=null;
+    tileHover=null;
+    th=true;
     drawGrid();
-    if(click&&tileClicked){
-        let t=tileClicked;
+    if(tileHover)for(let i=0;i<tileHover.tAdj;i++){
+        tileHover.adj[i].hl=true;
+    }
+    th=false;
+    drawGrid();
+    if(click&&tileHover){
+        let t=tileHover;
         if(t.revealed&&t.known){
             if(t.eAdj>0){
                 if(t.rBomb==0||t.rBomb==t.eAdj){
@@ -277,6 +283,12 @@ function draw(){
                 t.flag=1;
                 reveal(t,1,1);
             }
+        }
+    }
+    if(tileHover){
+        for(let i=0;i<tileHover.tAdj;i++){
+            let t=tileHover.adj[i];
+            
         }
     }
 }
@@ -377,16 +389,21 @@ function drawTile(x,y,a,n,tile){
     stroke(0);
     for(let i=0;i<n;i++){
         let x1=x+cos(a+i*t)*r,y1=y+sin(a+i*t)*r,x2=x+cos(a+i*t+t)*r,y2=y+sin(a+i*t+t)*r;
-        stroke(0);
-        line(x1,y1,x2,y2);
-        noStroke();
-        if(tile.revealed||tile.flag)fill(255);
-        else fill(235)
-        triangle(x1,y1,x2,y2,x,y)
-        if(magic(x1,y1,x2,y2,x,y)){
-            tileClicked=tile;
+        if(!th){
+            stroke(0);
+            line(x1,y1,x2,y2);
+            noStroke();
+            if(tile.revealed||tile.flag)fill(255);
+            else fill(235)
+            if(!tile.revealed&&tile.hl)fill(205)
+            triangle(x1,y1,x2,y2,x,y)
+        }
+        if(th&&magic(x1,y1,x2,y2,x,y)){
+            tileHover=tile;
         }
     }
+    tile.hl=false;
+    if(th)return;
     textAlign(CENTER,CENTER);
     fill(0);
     if(tile.revealed){
