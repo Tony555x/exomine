@@ -28,10 +28,10 @@ namespace exomine.Services.Data
         {
 
             Random rng = new Random();
-            Tiles = Tiles.OrderBy(x => rng.Next()).ToList();
+            List<Tile> RTiles = Tiles.OrderBy(x => rng.Next()).ToList();
             for (int i = 0; i < Bombs; i++)
             {
-                Tile t = Tiles[i];
+                Tile t = RTiles[i];
                 t.Bomb = true;
                 for (int j = 0; j < t.Adj.Count; j++)
                 {
@@ -39,6 +39,11 @@ namespace exomine.Services.Data
                     t2.Bombs++;
                 }
             }
+            /*for (int i = 0; i < Tiles.Count; i++)
+            {
+                Tile t = Tiles[i];
+                Console.WriteLine(i + " : " + t.Bombs);
+            }*/
         }
         public void RevealTile(Tile t, bool perm)
         {

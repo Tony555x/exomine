@@ -14,13 +14,13 @@ namespace exomine.Data.Models
         [Required]
         public int Difficulty { get; set; }
         [Required]
-        [MaxLength(300)]
+        [MaxLength(1000)]
         public string Bombs { get; set; } = String.Empty;
         [Required]
-        [MaxLength(300)]
+        [MaxLength(1000)]
         public string Revealed { get; set; } = String.Empty;
         [Required]
-        [MaxLength(300)]
+        [MaxLength(1000)]
         public string Known { get; set; } = String.Empty;
         public ICollection<UserGame> PlayedBy { get; set; } = new List<UserGame>();
     }

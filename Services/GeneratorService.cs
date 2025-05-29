@@ -156,7 +156,7 @@ namespace exomine.Services
                 for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
                 if (!Attempt(rel, 0, false))
                 {
-                    //Console.WriteLine("Bomb: " + (t.X+1) + " " + (t.Y+1)+" rel: "+rel.Count);
+                    //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     ok = true;
                     grid.RevealTile(t, false);
                     break;
@@ -164,7 +164,7 @@ namespace exomine.Services
                 //Console.WriteLine();
                 if (!Attempt(rel, 0, true))
                 {
-                    //Console.WriteLine("Clear: " + (t.X + 1) + " " + (t.Y + 1) + " rel: " + rel.Count);
+                    //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     ok = true;
                     grid.RevealTile(t, false);
                     break;
@@ -175,6 +175,7 @@ namespace exomine.Services
         }
         bool Attempt(List<Tile> rel, int i, bool val)
         {
+            //Console.Write(i);
             if (i > 20) return true; //i hope this isnt a bad idea
             Tile t = rel[i];
             bool ok = true, sol = false;

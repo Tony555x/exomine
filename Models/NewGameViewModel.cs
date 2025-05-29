@@ -6,7 +6,7 @@ namespace exomine.Models
     public class NewGameViewModel
     {
         [Required]
-        [Range(3, 10)]
+        [Range(3, 20)]
         public int Size { get; set; }
 
         [Range(0, 10000)]

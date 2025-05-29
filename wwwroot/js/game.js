@@ -23,7 +23,6 @@ function setup() {
     if(data.type=="SquareTriHex"){
         initSquareTriHexGrid();
     }
-    remaining=Math.floor(width*height*2/5);
     document.getElementById("rb").innerText=remaining;
     angleMode(DEGREES);
 }
@@ -64,6 +63,7 @@ function initSquareGrid(){
             }
         }
     }
+    remaining=Math.floor(width*height*2/5);
 }
 function initHexagonGrid(){
     height=data.size;
@@ -104,6 +104,7 @@ function initHexagonGrid(){
             }
         }
     }
+    remaining=Math.floor(width*height*2/5);
 }
 function initTriangleGrid(){
     height=data.size;
@@ -144,6 +145,7 @@ function initTriangleGrid(){
             }
         }
     }
+    remaining=Math.floor(width*height*2/5);
 
 }
 function initSquareTriHexGrid(){
@@ -167,14 +169,14 @@ function initSquareTriHexGrid(){
         let row=[];
         for(let j=0;j<width/2;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
-            if(data.bombs[i*width+j+offset]=='1')t.bomb=1;
-            if(data.revealed[i*width+j+offset]=='1')t.revealed=1;
-            if(data.known[i*width+j+offset]=='1')t.known=1;
+            if(data.bombs[i*floor(width/2)+j+offset]=='1')t.bomb=1;
+            if(data.revealed[i*floor(width/2)+j+offset]=='1')t.revealed=1;
+            if(data.known[i*floor(width/2)+j+offset]=='1')t.known=1;
             row.push(t);
         }
         altgrid.push(row);
     }
-    side=600/(data.size+0.5)/r3;
+    side=600/(data.size+1)/(r3+1)*2;
     for(let x=0;x<width;x++){
         for(let y=0;y<height;y++){
             let t=grid[y][x];
@@ -233,6 +235,7 @@ function initSquareTriHexGrid(){
             }
         }
     }
+    remaining=Math.floor((width*height+floor(width/2)*(height-1))*2/5);
 }
 function draw(){
     background(255);
@@ -246,7 +249,7 @@ function draw(){
     drawGrid();
     if(click&&tileClicked){
         let t=tileClicked;
-        if(t.revealed){
+        if(t.revealed&&t.known){
             if(t.eAdj>0){
                 if(t.rBomb==0||t.rBomb==t.eAdj){
                     for(let i=0;i<t.tAdj;i++){
@@ -344,6 +347,26 @@ function drawSquareTriHexGrid(){
                 a,
                 n,
                 grid[y][x])
+        }
+    }
+    for(let x=0;x<floor(width/2);x++){
+        for(let y=0;y<height-1;y++){
+            let a=0;
+            let h=0;
+            if((x+y)%2==0){
+                h=0.5+r3/6
+                a=0;
+            }
+            else{
+                h=1+r3/3;
+                a=180;
+            }
+            drawTile(
+                x*side*(3+r3)/2+side+h*side,
+                (y+1)*side*(r3+1)/2+side*r3/2,
+                a,
+                3,
+                altgrid[y][x])
         }
     }
 

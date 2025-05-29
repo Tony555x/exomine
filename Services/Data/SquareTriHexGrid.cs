@@ -76,7 +76,7 @@ namespace exomine.Services.Data
                             {
                                 TileGridAlt[x, y].Adj.Add(TileGrid[h + dx, v + dy]);
                                 TileGridAlt[x, y].Empty++;
-                                TileGrid[h + dx, v + dy].Adj.Add(TileGrid[x, y]);
+                                TileGrid[h + dx, v + dy].Adj.Add(TileGridAlt[x, y]);
                                 TileGrid[h + dx, v + dy].Empty++;
                             }
 
@@ -85,6 +85,22 @@ namespace exomine.Services.Data
 
                 }
             }
+            /*for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    Console.Write(TileGrid[x, y].AdjCount);
+                }
+                Console.WriteLine(); 
+            }
+            for (int y = 0; y < Height-1; y++)
+            {
+                for (int x = 0; x < Width/2; x++)   
+                {
+                    Console.Write(TileGridAlt[x, y].AdjCount);
+                }
+                Console.WriteLine(); 
+            }*/
             Bombs = Tiles.Count * 2 / 5;
             RemainingBombs = Bombs;
             //Console.WriteLine("AltGrid Adj ok");
@@ -113,8 +129,6 @@ namespace exomine.Services.Data
                     game.Known += TileGridAlt[x, y].Known ? '1' : '0';
                 }
             }
-            Bombs = Tiles.Count * 2 / 5;
-            RemainingBombs = Bombs;
             return game;
         }
     }
