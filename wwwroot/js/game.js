@@ -377,7 +377,12 @@ function drawTile(x,y,a,n,tile){
     stroke(0);
     for(let i=0;i<n;i++){
         let x1=x+cos(a+i*t)*r,y1=y+sin(a+i*t)*r,x2=x+cos(a+i*t+t)*r,y2=y+sin(a+i*t+t)*r;
+        stroke(0);
         line(x1,y1,x2,y2);
+        noStroke();
+        if(tile.revealed||tile.flag)fill(255);
+        else fill(235)
+        triangle(x1,y1,x2,y2,x,y)
         if(magic(x1,y1,x2,y2,x,y)){
             tileClicked=tile;
         }
@@ -386,9 +391,20 @@ function drawTile(x,y,a,n,tile){
     fill(0);
     if(tile.revealed){
         textSize(side*n/8);
-        if(tile.bomb)text("B",x,y)
-        else if(tile.known)text(tile.tBomb,x,y)
-        else text("?",x,y)
+        if(tile.bomb){
+            fill(127,0,0);
+            text("B",x,y)
+        }
+        else if(tile.known){
+            fill(0);
+            if(tile.eAdj==0&&tile.rBomb==0)fill(127);
+            if(tile.rBomb<0)fill(196,0,0)
+            text(tile.tBomb,x,y)
+        }
+        else{
+            fill(127)
+            text("?",x,y)
+        }
     }
     if(tile.flag){
         imageMode(CENTER);
