@@ -153,8 +153,15 @@ namespace exomine.Services
                         }
                     }
                 }
+                if (grid.RemainingTiles < 20)
+                {
+                    for (int j = 0; j < grid.Tiles.Count; j++)
+                    {
+                        if (!grid.Tiles[j].Revealable && !grid.Tiles[j].Lock) rel.Add(grid.Tiles[j]);
+                    }
+                }
                 for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
-                if (!Attempt(rel, 0, false))
+                if (!Attempt(rel, 0, false, grid.RemainingBombs))
                 {
                     //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     ok = true;
@@ -162,7 +169,7 @@ namespace exomine.Services
                     break;
                 }
                 //Console.WriteLine();
-                if (!Attempt(rel, 0, true))
+                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1))
                 {
                     //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     ok = true;
@@ -173,16 +180,17 @@ namespace exomine.Services
             }
             return ok;
         }
-        bool Attempt(List<Tile> rel, int i, bool val)
+        bool Attempt(List<Tile> rel, int i, bool val, int rem)
         {
             //Console.Write(i);
+            if (rem < 0) return false;
             if (i > 20) return true; //i hope this isnt a bad idea
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);
             if (ok && i == rel.Count - 1) sol = true;
-            if (ok && !sol) sol = sol || Attempt(rel, i + 1, false);
-            if (ok && !sol) sol = sol || Attempt(rel, i + 1, true);
+            if (ok && !sol) sol = sol || Attempt(rel, i + 1, false, rem);
+            if (ok && !sol) sol = sol || Attempt(rel, i + 1, true, rem - 1);
             t.Clear();
             return sol;
         }
