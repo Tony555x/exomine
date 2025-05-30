@@ -46,8 +46,9 @@ namespace exomine.Services
             grid.Init();
             while (true)
             {
-                bool ok = TrySolve(grid);
-                if (ok) break;
+                int dif = TrySolve(grid);
+                Console.WriteLine("dif "+dif);
+                if (dif > -1) break;
                 Tile? t = grid.Tiles.Where(t => t.Revealable && !t.Known && t.Adj.Any(t2 => !t2.Revealable)).FirstOrDefault();
                 if (t != null)
                 {
@@ -67,8 +68,8 @@ namespace exomine.Services
                 if (!t.Revealed) continue;
                 grid.UnrevealTile(t, true);
                 grid.Clear();
-                bool ok = TrySolve(grid);
-                if (!ok)
+                int dif = TrySolve(grid);
+                if (dif==-1)
                 {
                     grid.RevealTile(t, true);
                 }
@@ -80,26 +81,35 @@ namespace exomine.Services
                 if (!t.Known||t.Bomb) continue;
                 t.Known = false;
                 grid.Clear();
-                bool ok = TrySolve(grid);
-                if (!ok)
+                int dif = TrySolve(grid);
+                if (dif==-1)
                 {
                     t.Known = true;
                 }
                 //else Console.WriteLine("Trim Known");
             }
+            grid.Clear();
+            int fdif = TrySolve(grid);
             Game game = grid.Compress();
+            game.Difficulty = fdif;
             return game;
         }
-        bool TrySolve(IGrid grid)
+        int TrySolve(IGrid grid)
         {
-            bool ok = SolveStep(grid);
-            while (ok) ok = SolveStep(grid);
-            if (grid.RevealableTiles == grid.Tiles.Count) return true;
-            else return false;
+            int dif = 0;
+            int d = SolveStep(grid);
+            Console.Write("d " + d);
+            while (d != -1)
+            {
+                dif += d;
+                d = SolveStep(grid);
+            }
+            if (grid.RevealableTiles == grid.Tiles.Count) return dif;
+            else return -1;
         }
-        bool SolveStep(IGrid grid)
+        int SolveStep(IGrid grid) // return step difficulty
         {
-            bool ok = false;
+            if (grid.RemainingTiles == 0) return -1;
             if (grid.RemainingBombs == grid.RemainingTiles)
             {
                 //Console.WriteLine("BombFill: "+grid.RemainingBombs);
@@ -111,7 +121,7 @@ namespace exomine.Services
                         grid.RevealTile(t, false);
                     }
                 }
-                return false;
+                return 0;
             }
             if (grid.RemainingBombs == 0)
             {
@@ -124,7 +134,21 @@ namespace exomine.Services
                         grid.RevealTile(t, false);
                     }
                 }
-                return false;
+                return 0;
+            }
+            for (int i = 0; i < grid.Tiles.Count; i++) // Chord
+            {
+                Tile t = grid.Tiles[i];
+                if (!t.Known||!t.Revealable||t.Bomb||t.Empty == 0) continue;
+                if (t.RemainingBombs == 0||t.RemainingBombs==t.Empty)
+                {
+                    for (int j = 0; j < t.AdjCount; j++)
+                    {
+                        Tile t2 = t.Adj[j];
+                        if (!t2.Revealable) grid.RevealTile(t2, false);
+                    }
+                    return 0;
+                }
             }
             for (int i = 0; i < grid.Tiles.Count; i++)
             {
@@ -164,21 +188,19 @@ namespace exomine.Services
                 if (!Attempt(rel, 0, false, grid.RemainingBombs))
                 {
                     //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
-                    ok = true;
                     grid.RevealTile(t, false);
-                    break;
+                    return 1;
                 }
                 //Console.WriteLine();
                 if (!Attempt(rel, 0, true, grid.RemainingBombs - 1))
                 {
                     //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
-                    ok = true;
                     grid.RevealTile(t, false);
-                    break;
+                    return 1;
                 }
                 //Console.WriteLine();
             }
-            return ok;
+            return -1;
         }
         bool Attempt(List<Tile> rel, int i, bool val, int rem)
         {

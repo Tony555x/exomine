@@ -5,6 +5,7 @@
 }
 <div id="game-container"></div>
 <p>Remaining Bombs:<span id="rb"></span></p>
+<p>Difficulty: @game.Difficulty</p>
 
 @section Scripts {
     <script>
@@ -13,7 +14,7 @@
             type: "@game.Type",
             bombs: "@game.Bombs",
             revealed: "@game.Revealed",
-            known: "@game.Known"
+            known: "@game.Known",
         };
         console.log(data);
     </script>
