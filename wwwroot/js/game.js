@@ -41,7 +41,7 @@ function initSquareGrid(){
         }
         grid.push(row);
     }
-    side=600/data.size;
+    side=596/data.size;
     for(let y=0;y<height;y++){
         for(let x=0;x<width;x++){
             let t=grid[y][x]
@@ -80,7 +80,7 @@ function initHexagonGrid(){
         }
         grid.push(row);
     }
-    side=600/(data.size+0.5)/r3;
+    side=596/(data.size+0.5)/r3;
     for(let y=0;y<height;y++){
         for(let x=0;x<width;x++){
             let t=grid[y][x]
@@ -121,7 +121,7 @@ function initTriangleGrid(){
         }
         grid.push(row);
     }
-    side=600/(data.size*r3/2);
+    side=596/(data.size*r3/2);
     for(let y=0;y<height;y++){
         for(let x=0;x<width;x++){
             let t=grid[y][x]
@@ -176,7 +176,7 @@ function initSquareTriHexGrid(){
         }
         altgrid.push(row);
     }
-    side=600/(data.size+1)/(r3+1)*2;
+    side=596/(data.size+data.size%2+1)/(r3+1)*2;
     for(let x=0;x<width;x++){
         for(let y=0;y<height;y++){
             let t=grid[y][x];
@@ -384,6 +384,8 @@ function drawSquareTriHexGrid(){
 
 }
 function drawTile(x,y,a,n,tile){
+    x+=2;
+    y+=2;
     let r=side/2/sin(180/n);
     let t=360/n;
     stroke(0);
