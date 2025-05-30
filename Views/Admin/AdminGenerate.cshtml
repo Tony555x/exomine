@@ -1,0 +1,38 @@
+@model AdminGenerateViewModel
+
+<h2>Admin Game Generator</h2>
+
+<form asp-action="AdminGenerate" method="post">
+    <div class="mb-3">
+        <label asp-for="Size" class="form-label">Board Size</label>
+        <input asp-for="Size" class="form-control" value=5 />
+        <span asp-validation-for="Size" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Grid Type</label>
+        <select asp-for="Type" class="form-select">
+            <option value="hexagon">Hexagon</option>
+            <option value="square">Square</option>
+            <option value="triangle">Triangle</option>
+            <option value="squaretrihex">SquareTriHex</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Count" class="form-label">Number of Boards</label>
+        <input asp-for="Count" class="form-control" value=10 />
+        <span asp-validation-for="Count" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <p>@Model.Message</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Generate Boards</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
