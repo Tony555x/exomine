@@ -39,9 +39,7 @@ namespace exomine.Services.Data
                             }
                         }
                     }
-                    Console.Write(TileGrid[x, y].Empty);
                 }
-                Console.WriteLine();
             }
         }
         public override Game Compress()

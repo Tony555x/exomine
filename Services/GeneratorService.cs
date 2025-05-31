@@ -47,7 +47,6 @@ namespace exomine.Services
             while (true)
             {
                 int dif = TrySolve(grid);
-                Console.WriteLine("dif "+dif);
                 if (dif > -1) break;
                 Tile? t = grid.Tiles.Where(t => t.Revealable && !t.Known && t.Adj.Any(t2 => !t2.Revealable)).FirstOrDefault();
                 if (t != null)
@@ -98,7 +97,6 @@ namespace exomine.Services
         {
             int dif = 0;
             int d = SolveStep(grid);
-            Console.Write("d " + d);
             while (d != -1)
             {
                 dif += d;
@@ -185,16 +183,16 @@ namespace exomine.Services
                     }
                 }
                 for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
-                if (!Attempt(rel, 0, false, grid.RemainingBombs))
+                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1))
                 {
-                    //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
+                    //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
                     return 1;
                 }
                 //Console.WriteLine();
-                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1))
+                if (!Attempt(rel, 0, false, grid.RemainingBombs))
                 {
-                    //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
+                    //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
                     return 1;
                 }

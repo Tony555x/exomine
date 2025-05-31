@@ -1,4 +1,5 @@
 using exomine.Data;
+using exomine.Data.Models;
 using exomine.Models;
 using exomine.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,23 @@ namespace exomine.Controllers
         [HttpPost]
         public async Task<IActionResult> AdminGenerate(AdminGenerateViewModel model)
         {
-            for (int i = 0; i < model.Count; i++)
-            {
-                var game = _gen.GenerateRandom(model.Size, model.Type);
-                await _db.Games.AddAsync(game);
-            }
+            Console.WriteLine(model.Size + " " + model.Type);
+            List<Task> tasks = new();
+            var games = await Task.WhenAll(
+                Enumerable.Range(0, model.Count).Select(i =>
+                    Task.Run(() =>
+                    {
+                        Game g=_gen.GenerateRandom(model.Size, model.Type);
+                        Console.WriteLine(i);
+                        return g;
+                    })
+                )
+            );
 
+            await _db.Games.AddRangeAsync(games);
             await _db.SaveChangesAsync();
             model.Message = "Completed.";
-            return View();
+            return View(model);
         }
     }
 }
