@@ -1,3 +1,4 @@
+using exomine.Data.Configurations;
 using exomine.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ namespace exomine.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.Entity<UserGame>().HasKey(ug => new { ug.UserId, ug.GameId });
         }
     }

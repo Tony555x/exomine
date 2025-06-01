@@ -15,6 +15,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<GeneratorService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 

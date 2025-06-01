@@ -3,6 +3,7 @@
 @{
     var userId = HttpContextAccessor.HttpContext?.Session.GetInt32("UserId");
     var username = HttpContextAccessor.HttpContext?.Session.GetString("Username");
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -32,29 +33,32 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Generator" asp-action="New">New Game</a>
                         </li>
+                        @if(role=="Admin"){
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="AdminGenerate">Admin</a>
+                            </li>
+                        }
                     </ul>
-                    @if (userId == null)
-                    {
-                        <ul class="navbar-nav flex-grow-1 d-flex justify-content-end">
+                    <ul class="navbar-nav flex-grow-1 d-flex justify-content-end">
+                        @if (userId == null)
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        }
+                        else
+                        {
                             <li class="nav-item">
                                 <p class="nav-link">@username</p>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
-                        </ul>
-                    }
+                        }
+                    </ul>
                     </ul>
                 </div>
             </div>

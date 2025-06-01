@@ -1,16 +1,17 @@
 using exomine.Data;
 using exomine.Data.Models;
 using exomine.Models;
+using exomine.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 public class AccountController : Controller
 {
-    private readonly MineContext _db;
+    private readonly AuthService _auth;
 
-    public AccountController(MineContext db)
+    public AccountController(AuthService auth)
     {
-        _db = db;
+        _auth = auth;
     }
 
     [HttpGet]
@@ -19,19 +20,17 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+        if (!ModelState.IsValid) return View(model);
+        var user = await _auth.AuthenticateAsync(model.Username, model.Password);
         if (user == null)
         {
-            model.ErrorMessage = "Invalid username.";
+            model.ErrorMessage = "Invalid username or password.";
             return View(model);
         }
-        if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-        {
-            model.ErrorMessage = "Invalid password.";
-            return View(model);
-        }
+
         HttpContext.Session.SetInt32("UserId", user.Id);
         HttpContext.Session.SetString("Username", user.Username);
+        HttpContext.Session.SetString("Role", user.Role);
         return RedirectToAction("Index", "Home");
     }
 
@@ -42,28 +41,24 @@ public class AccountController : Controller
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
+
         if (model.Password != model.ConfirmPassword)
         {
             model.ErrorMessage = "Passwords must match.";
             return View(model);
         }
 
-        if (await _db.Users.AnyAsync(u => u.Username == model.Username))
+        var (user, error) = await _auth.RegisterUserAsync(model);
+        if (user == null)
         {
-            model.ErrorMessage = "Username taken.";
+            model.ErrorMessage = error;
             return View(model);
         }
 
-        var user = new User
-        {
-            Username = model.Username,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
-        };
-        await _db.Users.AddAsync(user);
-        await _db.SaveChangesAsync();
-
         HttpContext.Session.SetInt32("UserId", user.Id);
         HttpContext.Session.SetString("Username", user.Username);
+        HttpContext.Session.SetString("Role", user.Role);
+
         return RedirectToAction("Index", "Home");
     }
 
