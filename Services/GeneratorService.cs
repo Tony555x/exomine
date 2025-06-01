@@ -20,14 +20,14 @@ namespace exomine.Services
                 g.Type == type &&
                 g.Size == size &&
                 g.Difficulty >= difficulty &&
-                _db.UserGames.Any(ug => ug.GameId == g.Id && ug.UserId == user.Id)
+                !_db.UserGames.Any(ug => ug.GameId == g.Id && ug.UserId == user.Id)
                 ).OrderBy(g => g.Difficulty).FirstOrDefaultAsync();
             if (game == null)
             {
                 game = await _db.Games.Where(g =>
                 g.Type == type &&
                 g.Size == size &&
-                _db.UserGames.Any(ug => ug.GameId == g.Id && ug.UserId == user.Id)
+                !_db.UserGames.Any(ug => ug.GameId == g.Id && ug.UserId == user.Id)
                 ).OrderByDescending(g => g.Difficulty).FirstOrDefaultAsync();
             }
             return game;
