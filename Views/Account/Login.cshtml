@@ -13,5 +13,7 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
-    <p>@Model.ErrorMessage</p>
+    @if(Model.ErrorMessage!=null){
+        <p>@Model.ErrorMessage</p>
+    }
 </form>

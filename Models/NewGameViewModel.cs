@@ -16,6 +16,7 @@ namespace exomine.Models
         public GridType Type { get; set; }
 
         [Required]
-        public bool UseExisting{ get; set; }
+        public bool UseExisting { get; set; }
+        public string? ErrorMessage { get; set; } = String.Empty;
     }
 }

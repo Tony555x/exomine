@@ -12,7 +12,6 @@ namespace exomine.Models
         [MinLength(UserConstants.PasswordMinLength)]
         [MaxLength(UserConstants.PasswordMaxLength)]
         public string Password { get; set; } = String.Empty;
-        [Required]
-        public string? ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; } = String.Empty;
     }
 }

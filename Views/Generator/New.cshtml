@@ -34,10 +34,11 @@
     </div>
 
     <div class="mb-3" id="minDifficultyBlock" style="display:none;">
-        <label asp-for="Difficulty" class="form-label">Minimum Difficulty</label>
+        <label asp-for="Difficulty" class="form-label">Minimum Difficulty (999 to find hardest)</label>
         <input asp-for="Difficulty" class="form-control" />
         <span asp-validation-for="Difficulty" class="text-danger"></span>
     </div>
+    @if(Model.ErrorMessage!=null){<p>@Model.ErrorMessage</p>}
 
     <button type="submit" class="btn btn-primary">Start Game</button>
 </form>
