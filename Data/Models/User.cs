@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace exomine.Data.Models
 {
@@ -14,6 +15,7 @@ namespace exomine.Data.Models
         public string PasswordHash { get; set; } = String.Empty;
         [Required]
         public string Role { get; set; } = String.Empty;
+        [InverseProperty("User")]
         public List<UserGame> GamesPlayed { get; set; } = new List<UserGame>();
 
         public static User CreateNew(string username, string password)

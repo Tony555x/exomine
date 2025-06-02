@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using exomine.Data.Enums;
 
 namespace exomine.Data.Models
@@ -22,6 +23,7 @@ namespace exomine.Data.Models
         [Required]
         [MaxLength(1000)]
         public string Known { get; set; } = String.Empty;
+        [InverseProperty("Game")]
         public ICollection<UserGame> PlayedBy { get; set; } = new List<UserGame>();
     }
 }

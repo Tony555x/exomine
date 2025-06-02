@@ -46,15 +46,22 @@ namespace exomine.Controllers
             else
             {
                 game = _gen.GenerateRandom(model.Size, model.Type);
-                _db.Games.Add(game);
-                await _db.SaveChangesAsync();
                 if (game == null)
                 {
                     model.ErrorMessage = "Generation error. Use \"Load from Database\" or try again later.";
                     return View(model);
                 }
+                await _db.Games.AddAsync(game);
+                await _db.SaveChangesAsync();
             }
             if (game == null) return View(model);
+            _db.Attach(game);
+            UserGame ug = new();
+            ug.UserId = user.Id;
+            ug.GameId = game.Id;
+            ug.Win = false;
+            await _db.UserGames.AddAsync(ug);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Play", "Game", new { id = game.Id });
         }
 

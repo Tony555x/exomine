@@ -8,11 +8,11 @@ namespace exomine.Data.Models
         [Required]
         [ForeignKey(nameof(User))]
         public int UserId { get; set; }
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
         [Required]
         [ForeignKey(nameof(Game))]
         public int GameId { get; set; }
-        public Game Game { get; set; } = new Game();
+        public Game? Game { get; set; }
         [Required]
         public TimeSpan Time { get; set; }
         [Required]
