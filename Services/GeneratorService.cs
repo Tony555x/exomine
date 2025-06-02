@@ -52,9 +52,10 @@ namespace exomine.Services
                 grid = new SquareTriHexGrid(size);
             }
             grid.Init();
+            List<Tile> rel = new List<Tile>();
             while (true)
             {
-                int dif = TrySolve(grid);
+                int dif = TrySolve(grid, rel);
                 if (dif > -1) break;
                 Tile? t = grid.Tiles.Where(t => t.Revealable && !t.Known && t.Adj.Any(t2 => !t2.Revealable)).FirstOrDefault();
                 if (t != null)
@@ -75,7 +76,7 @@ namespace exomine.Services
                 if (!t.Revealed) continue;
                 grid.UnrevealTile(t, true);
                 grid.Clear();
-                int dif = TrySolve(grid);
+                int dif = TrySolve(grid,rel);
                 if (dif==-1)
                 {
                     grid.RevealTile(t, true);
@@ -88,7 +89,7 @@ namespace exomine.Services
                 if (!t.Known||t.Bomb) continue;
                 t.Known = false;
                 grid.Clear();
-                int dif = TrySolve(grid);
+                int dif = TrySolve(grid,rel);
                 if (dif==-1)
                 {
                     t.Known = true;
@@ -96,24 +97,24 @@ namespace exomine.Services
                 //else Console.WriteLine("Trim Known");
             }
             grid.Clear();
-            int fdif = TrySolve(grid);
+            int fdif = TrySolve(grid,rel);
             Game game = grid.Compress();
             game.Difficulty = fdif;
             return game;
         }
-        int TrySolve(IGrid grid)
+        int TrySolve(IGrid grid,List<Tile>rel)
         {
             int dif = 0;
-            int d = SolveStep(grid);
+            int d = SolveStep(grid,rel);
             while (d != -1)
             {
                 dif += d;
-                d = SolveStep(grid);
+                d = SolveStep(grid,rel);
             }
             if (grid.RevealableTiles == grid.Tiles.Count) return dif;
             else return -1;
         }
-        int SolveStep(IGrid grid) // return step difficulty
+        int SolveStep(IGrid grid,List<Tile>rel) // return step difficulty
         {
             if (grid.RemainingTiles == 0) return -1;
             if (grid.RemainingBombs == grid.RemainingTiles)
@@ -161,7 +162,7 @@ namespace exomine.Services
                 Tile t = grid.Tiles[i];
                 if (t.Revealable) continue;
                 if (!t.Adj.Any(t2 => t2.Known && t2.Revealable && !t2.Bomb)) continue;
-                List<Tile> rel = new List<Tile>();
+                rel.Clear();
                 rel.Add(t);
                 t.Lock = true;
                 for (int j = 0; j < rel.Count; j++) //BFS

@@ -30,7 +30,6 @@ namespace exomine.Controllers
                     Task.Run(() =>
                     {
                         Game g=_gen.GenerateRandom(model.Size, model.Type);
-                        Console.WriteLine(i);
                         return g;
                     })
                 )
