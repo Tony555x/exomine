@@ -192,14 +192,14 @@ namespace exomine.Services
                     }
                 }
                 for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
-                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1))
+                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1, 10))
                 {
                     //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
                     return 1;
                 }
                 //Console.WriteLine();
-                if (!Attempt(rel, 0, false, grid.RemainingBombs))
+                if (!Attempt(rel, 0, false, grid.RemainingBombs, 10))
                 {
                     //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
@@ -207,19 +207,70 @@ namespace exomine.Services
                 }
                 //Console.WriteLine();
             }
+            for (int i = 0; i < grid.Tiles.Count; i++) // EXPAND
+            {
+                Tile t = grid.Tiles[i];
+                if (t.Revealable) continue;
+                if (!t.Adj.Any(t2 => t2.Known && t2.Revealable && !t2.Bomb)) continue;
+                rel.Clear();
+                rel.Add(t);
+                t.Lock = true;
+                for (int j = 0; j < rel.Count; j++) //BFS
+                {
+                    Tile t2 = rel[j];
+                    for (int k = 0; k < t2.Adj.Count; k++)
+                    {
+                        Tile t3 = t2.Adj[k];
+                        if (t3.Revealable && t3.Known && !t3.Bomb && !t3.Lock)
+                        {
+                            for (int h = 0; h < t3.Adj.Count; h++)
+                            {
+                                Tile t4 = t3.Adj[h];
+                                if (t4.Revealable || t4.Lock) continue;
+                                rel.Add(t4);
+                                t4.Lock = true;
+                            }
+                            t3.Lock = true;
+                        }
+                    }
+                }
+                if (grid.RemainingTiles < 20)
+                {
+                    for (int j = 0; j < grid.Tiles.Count; j++)
+                    {
+                        if (!grid.Tiles[j].Revealable && !grid.Tiles[j].Lock) rel.Add(grid.Tiles[j]);
+                    }
+                }
+                for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
+                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1, 20))
+                {
+                    //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
+                    grid.RevealTile(t, false);
+                    return 10;
+                }
+                //Console.WriteLine();
+                if (!Attempt(rel, 0, false, grid.RemainingBombs, 20))
+                {
+                    //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
+                    grid.RevealTile(t, false);
+                    return 10;
+                }
+                //Console.WriteLine();
+            }
             return -1;
         }
-        bool Attempt(List<Tile> rel, int i, bool val, int rem)
+
+        bool Attempt(List<Tile> rel, int i, bool val, int rem, int md)
         {
             //Console.Write(i);
             if (rem < 0) return false;
-            if (i > 20) return true; //i hope this isnt a bad idea
+            if (i > md) return true; //i hope this isnt a bad idea
             Tile t = rel[i];
             bool ok = true, sol = false;
             ok = t.SetBomb(val);
             if (ok && i == rel.Count - 1) sol = true;
-            if (ok && !sol) sol = sol || Attempt(rel, i + 1, false, rem);
-            if (ok && !sol) sol = sol || Attempt(rel, i + 1, true, rem - 1);
+            if (ok && !sol) sol = sol || Attempt(rel, i + 1, false, rem, md);
+            if (ok && !sol) sol = sol || Attempt(rel, i + 1, true, rem - 1, md);
             t.Clear();
             return sol;
         }
