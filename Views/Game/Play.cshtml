@@ -7,6 +7,22 @@
 <p>Remaining Bombs:<span id="rb"></span></p>
 <p>Difficulty: @game.Difficulty</p>
 
+<form id="gameResultForm" method="post" action="/Game/Play" style="display:none;">
+    <input type="hidden" name="Game.Id" value="@game.Id" />
+    <input type="hidden" name="Game.Size" value="@game.Size" />
+    <input type="hidden" name="Game.Type" value="@((int)game.Type)" />
+    <input type="hidden" name="Game.Difficulty" value="@game.Difficulty" />
+    <input type="hidden" name="Game.Bombs" value='@game.Bombs' />
+    <input type="hidden" name="Game.Revealed" value='@game.Revealed' />
+    <input type="hidden" name="Game.Known" value='@game.Known' />
+    <input type="hidden" name="GameId" value='@Model.GameId' />
+    <input type="hidden" name="Time" id="Time" />
+</form>
+
+
+
+
+
 @section Scripts {
     <script>
         const data = {

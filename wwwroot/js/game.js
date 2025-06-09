@@ -1,7 +1,9 @@
-let width,height, side ,grid,altgrid, gameType, bombs, revealed,remaining;
+let width,height, side ,grid,altgrid, gameType, bombs, revealed,remainingTiles=0,win=1;
 let click=false, hold=false, tileHover=null,th=false;
 let r2,r3;
 let flag;
+let startTime;
+let timerInterval;
 function preload(){
     flag=loadImage("/assets/flag.png")
 }
@@ -25,6 +27,7 @@ function setup() {
     }
     document.getElementById("rb").innerText=remaining;
     angleMode(DEGREES);
+    startTime = Date.now();
 }
 function initSquareGrid(){
     height=data.size;
@@ -35,9 +38,13 @@ function initSquareGrid(){
         for(let j=0;j<width;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
             if(data.bombs[i*width+j]=='1')t.bomb=1;
-            if(data.revealed[i*width+j]=='1')t.revealed=1;
+            if(data.revealed[i*width+j]=='1'){
+                t.revealed=1;
+                remainingTiles--;
+            }
             if(data.known[i*width+j]=='1')t.known=1;
             row.push(t);
+            remainingTiles++;
         }
         grid.push(row);
     }
@@ -74,9 +81,13 @@ function initHexagonGrid(){
         for(let j=0;j<width;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
             if(data.bombs[i*width+j]=='1')t.bomb=1;
-            if(data.revealed[i*width+j]=='1')t.revealed=1;
+            if(data.revealed[i*width+j]=='1'){
+                remainingTiles--;
+                t.revealed=1;
+            }
             if(data.known[i*width+j]=='1')t.known=1;
             row.push(t);
+            remainingTiles++;
         }
         grid.push(row);
     }
@@ -115,9 +126,13 @@ function initTriangleGrid(){
         for(let j=0;j<width;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
             if(data.bombs[i*width+j]=='1')t.bomb=1;
-            if(data.revealed[i*width+j]=='1')t.revealed=1;
+            if(data.revealed[i*width+j]=='1'){
+                remainingTiles--;
+                t.revealed=1;
+            }
             if(data.known[i*width+j]=='1')t.known=1;
             row.push(t);
+            remainingTiles++;
         }
         grid.push(row);
     }
@@ -159,9 +174,13 @@ function initSquareTriHexGrid(){
         for(let j=0;j<width;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[]};
             if(data.bombs[i*width+j]=='1')t.bomb=1;
-            if(data.revealed[i*width+j]=='1')t.revealed=1;
+            if(data.revealed[i*width+j]=='1'){
+                remainingTiles--;
+                t.revealed=1;
+            }
             if(data.known[i*width+j]=='1')t.known=1;
             row.push(t);
+            remainingTiles++;
         }
         grid.push(row);
     }
@@ -170,9 +189,13 @@ function initSquareTriHexGrid(){
         for(let j=0;j<width/2;j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[],hl:false};
             if(data.bombs[i*floor(width/2)+j+offset]=='1')t.bomb=1;
-            if(data.revealed[i*floor(width/2)+j+offset]=='1')t.revealed=1;
+            if(data.revealed[i*floor(width/2)+j+offset]=='1'){
+                remainingTiles--;
+                t.revealed=1;
+            }
             if(data.known[i*floor(width/2)+j+offset]=='1')t.known=1;
             row.push(t);
+            remainingTiles++;
         }
         altgrid.push(row);
     }
@@ -263,7 +286,7 @@ function draw(){
                         if(t2.revealed||t2.flag)continue;
                         if(t.rBomb>0)t2.flag=1;
                         else t2.revealed=1;
-                        reveal(t2,t2.bomb,1);
+                        reveal(t2,t2.bomb,1,t.rBomb==0);
                     }
                 }
             }
@@ -271,17 +294,17 @@ function draw(){
         if(mouseButton===LEFT){
             if(!t.flag&&!t.revealed){
                 t.revealed=1;
-                reveal(t,t.bomb,1);
+                reveal(t,t.bomb,1,1);
             }
         }
         if(mouseButton===RIGHT){
             if(t.flag){
                 t.flag=0;
-                reveal(t,1,-1);
+                reveal(t,1,-1,0);
             }
             else if(!t.revealed){
                 t.flag=1;
-                reveal(t,1,1);
+                reveal(t,1,1,0);
             }
         }
     }
@@ -291,8 +314,12 @@ function draw(){
             
         }
     }
+    const elapsedMs = Date.now() - startTime;
+    const seconds = (elapsedMs / 1000).toFixed(1);
+
 }
-function reveal(t,v,m){//tile,value,mult(set 1/unset -1)
+function reveal(t,v,m,l){//tile,value,mult(set 1/unset -1),lethal(1: remove win)
+    remainingTiles-=m;
     remaining-=v*m;
     for(let i=0;i<t.tAdj;i++){
         let t2=t.adj[i];
@@ -300,6 +327,10 @@ function reveal(t,v,m){//tile,value,mult(set 1/unset -1)
         if(v)t2.rBomb-=m;
     }
     document.getElementById("rb").innerText=remaining;
+    if(l&&v)win=0;
+    if(remainingTiles==0&&win){
+        submitGameResult((Date.now() - startTime) / 1000);
+    }
 }
 function drawGrid(){
     if(data.type=="Hexagon"){
@@ -437,4 +468,17 @@ function magic(x1,y1,x2,y2,x3,y3){
   let b=((y3-y1)*(mouseX-x3)+(x1-x3)*(mouseY-y3))/denom;
   let c=1-a-b;
   return a>=0&&b>=0&&c>=0;
+}
+
+function secondsToTimeSpan(seconds) {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+}
+
+function submitGameResult(timeSeconds) {
+    const timeSpanString = secondsToTimeSpan(timeSeconds);
+    document.getElementById('Time').value = timeSpanString;
+    document.getElementById('gameResultForm').submit();
 }

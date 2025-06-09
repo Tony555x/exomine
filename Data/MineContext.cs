@@ -9,8 +9,8 @@ namespace exomine.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<UserGame> UserGames { get; set; }
-        public DbSet<Achievement> Achievement { get; set; }
-        public DbSet<UserAchievement> UserAchievement { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

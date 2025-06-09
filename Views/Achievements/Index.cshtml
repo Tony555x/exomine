@@ -1,0 +1,14 @@
+@model AllAchievementsViewModel
+
+<h2>All Achievements</h2>
+
+<div class="list-group">
+    @foreach (var a in Model.Achievements)
+    {
+        var itemClass = a.IsUnlocked ? "list-group-item list-group-item-success" : "list-group-item";
+        <div class="@itemClass">
+            <h5 class="mb-1">@a.Name</h5>
+            <small class="text-muted">@(!a.IsUnlocked ? "Not yet unlocked" : "Unlocked")</small>
+        </div>
+    }
+</div>
