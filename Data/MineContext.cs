@@ -12,8 +12,10 @@ namespace exomine.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new AchievementConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.Entity<UserGame>().HasKey(ug => new { ug.UserId, ug.GameId });
+            modelBuilder.Entity<UserAchievement>().HasKey(ug => new { ug.UserId, ug.AchievementId });
         }
     }
 }
