@@ -33,6 +33,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Generator" asp-action="New">New Game</a>
                         </li>
+                        @if(userId!=null){
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Achievements" asp-action="Index">Achievements</a>
+                            </li>
+                        }
                         @if(role=="Admin"){
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="AdminGenerate">Admin</a>
