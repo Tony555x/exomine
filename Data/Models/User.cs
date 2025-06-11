@@ -8,8 +8,8 @@ namespace exomine.Data.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        [MinLength(UserConstants.UsernameMinLength)]
-        [MaxLength(UserConstants.UsernameMaxLength)]
+        [MinLength(1)]
+        [MaxLength(20)]
         public string Username { get; set; } = String.Empty;
         [Required]
         public string PasswordHash { get; set; } = String.Empty;

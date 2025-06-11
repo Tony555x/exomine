@@ -5,15 +5,13 @@
     <div class="mb-3">
         <label asp-for="Username" class="form-label"></label>
         <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <p style="color:red">@Model.UsernameErrorMessage</p>
     </div>
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
         <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
+        <p style="color:red">@Model.PasswordErrorMessage</p>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
-    @if(Model.ErrorMessage!=null){
-        <p>@Model.ErrorMessage</p>
-    }
+    
 </form>

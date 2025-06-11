@@ -87,7 +87,7 @@ namespace exomine.Controllers
                 }
             }
             await _db.SaveChangesAsync();
-            return RedirectToAction("Index", "Achievements");
+            return RedirectToAction("New", "Generator");
         }
 
     }

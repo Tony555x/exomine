@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 public class AccountController : Controller
 {
-    private readonly AuthService _auth;
+    private readonly MineContext _db;
 
-    public AccountController(AuthService auth)
+    public AccountController(MineContext db)
     {
-        _auth = auth;
+        _db = db;
     }
 
     [HttpGet]
@@ -20,11 +20,18 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
+        model.UsernameErrorMessage = String.Empty;
+        model.PasswordErrorMessage = String.Empty;
         if (!ModelState.IsValid) return View(model);
-        var user = await _auth.AuthenticateAsync(model.Username, model.Password);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
         if (user == null)
         {
-            model.ErrorMessage = "Invalid username or password.";
+            model.UsernameErrorMessage = "Username not found.";
+            return View(model);
+        }
+        if (model.Password==null||!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+        {
+            model.PasswordErrorMessage = "Incorrect password.";
             return View(model);
         }
 
@@ -40,20 +47,34 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
+        model.UsernameErrorMessage = String.Empty;
+        model.PasswordErrorMessage = String.Empty;
+        model.ConfirmErrorMessage = String.Empty;
         if (!ModelState.IsValid) return View(model);
-
-        if (model.Password != model.ConfirmPassword)
+        if (model.Username == null || model.Username.Length < 1 || model.Username.Length > 20)
         {
-            model.ErrorMessage = "Passwords must match.";
+            model.UsernameErrorMessage = "Username length must be between 1 and 20.";
+            return View(model);
+        }
+        if (await _db.Users.AnyAsync(u => u.Username == model.Username))
+        {
+            model.UsernameErrorMessage = "Username already taken.";
+            return View(model);
+        }
+        if (model.Password == null || model.Password.Length < 8 || model.Password.Length > 50)
+        {
+            model.PasswordErrorMessage = "Password length must be between 8 and 50.";
+            return View(model);
+        }
+        if (model.ConfirmPassword == null || model.Password != model.ConfirmPassword)
+        {
+            model.ConfirmErrorMessage = "Passwords must match.";
             return View(model);
         }
 
-        var (user, error) = await _auth.RegisterUserAsync(model);
-        if (user == null)
-        {
-            model.ErrorMessage = error;
-            return View(model);
-        }
+        var user = exomine.Data.Models.User.CreateNew(model.Username, model.Password);
+        await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync();
 
         HttpContext.Session.SetInt32("UserId", user.Id);
         HttpContext.Session.SetString("Username", user.Username);
