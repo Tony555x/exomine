@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using exomine.Data;
 
@@ -11,9 +12,11 @@ using exomine.Data;
 namespace exomine.Migrations
 {
     [DbContext(typeof(MineContext))]
-    partial class MineContextModelSnapshot : ModelSnapshot
+    [Migration("20250609162304_honestly i dont know")]
+    partial class honestlyidontknow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

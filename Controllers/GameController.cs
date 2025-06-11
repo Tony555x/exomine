@@ -46,7 +46,17 @@ namespace exomine.Controllers
             if (userid != null) user = await _db.Users.Where(u => u.Id == userid).FirstOrDefaultAsync();
             if (user == null) return RedirectToAction("Login", "Account");
             UserGame? ug = await _db.UserGames.Where(ug => ug.UserId == userid && ug.GameId == model.GameId).FirstOrDefaultAsync();
-            if (ug == null) return View(model);
+            if (ug == null)
+            {
+                ug = new UserGame
+                {
+                    UserId = user.Id,
+                    GameId = model.GameId,
+                    Win = false
+
+                };
+                await _db.UserGames.AddAsync(ug);
+            }
             ug.Win = true;
             if (model.Time.HasValue)
             {
@@ -69,7 +79,7 @@ namespace exomine.Controllers
             {
                 if (!userAchievementIds.Contains(achievement.Id))
                 {
-                    _db.UserAchievements.AddAsync(new UserAchievement
+                    await _db.UserAchievements.AddAsync(new UserAchievement
                     {
                         UserId = userid.Value,
                         AchievementId = achievement.Id

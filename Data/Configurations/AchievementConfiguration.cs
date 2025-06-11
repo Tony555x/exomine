@@ -18,7 +18,7 @@ public class AchievementConfiguration:IEntityTypeConfiguration<Achievement>{
             new Achievement { Id = 3, Name = "Win a hexagon game at size 5", GridType = GridType.Hexagon, MinSize = 5 },
             new Achievement { Id = 4, Name = "Win a hexagon game at size 10", GridType = GridType.Hexagon, MinSize = 10 },
             new Achievement { Id = 5, Name = "Win a hexagon game at difficulty at least 20", GridType = GridType.Hexagon, MinDifficulty = 20 },
-            new Achievement { Id = 6, Name = "Win a hexagon game at difficulty at least 20 under 30 seconds", GridType = GridType.Hexagon, MinDifficulty = 20, MaxTimeSeconds = 30 },
+            new Achievement { Id = 6, Name = "Win a hexagon game at difficulty at least 20 under 30 seconds", GridType = GridType.Hexagon, MinDifficulty = 20, MaxTimeSeconds = 120 },
 
             new Achievement { Id = 7, Name = "Win a square game at size 5", GridType = GridType.Square, MinSize = 5 },
             new Achievement { Id = 8, Name = "Win a square game at size 10", GridType = GridType.Square, MinSize = 10 },

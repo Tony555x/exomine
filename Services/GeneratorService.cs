@@ -192,71 +192,22 @@ namespace exomine.Services
                     }
                 }
                 for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
-                if (!Attempt(rel, 0, true, grid.RemainingBombs - 1, 10))
-                {
-                    //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
-                    grid.RevealTile(t, false);
-                    return 1;
-                }
-                //Console.WriteLine();
-                if (!Attempt(rel, 0, false, grid.RemainingBombs, 10))
-                {
-                    //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
-                    grid.RevealTile(t, false);
-                    return 1;
-                }
-                //Console.WriteLine();
-            }
-            for (int i = 0; i < grid.Tiles.Count; i++) // EXPAND
-            {
-                Tile t = grid.Tiles[i];
-                if (t.Revealable) continue;
-                if (!t.Adj.Any(t2 => t2.Known && t2.Revealable && !t2.Bomb)) continue;
-                rel.Clear();
-                rel.Add(t);
-                t.Lock = true;
-                for (int j = 0; j < rel.Count; j++) //BFS
-                {
-                    Tile t2 = rel[j];
-                    for (int k = 0; k < t2.Adj.Count; k++)
-                    {
-                        Tile t3 = t2.Adj[k];
-                        if (t3.Revealable && t3.Known && !t3.Bomb && !t3.Lock)
-                        {
-                            for (int h = 0; h < t3.Adj.Count; h++)
-                            {
-                                Tile t4 = t3.Adj[h];
-                                if (t4.Revealable || t4.Lock) continue;
-                                rel.Add(t4);
-                                t4.Lock = true;
-                            }
-                            t3.Lock = true;
-                        }
-                    }
-                }
-                if (grid.RemainingTiles < 20)
-                {
-                    for (int j = 0; j < grid.Tiles.Count; j++)
-                    {
-                        if (!grid.Tiles[j].Revealable && !grid.Tiles[j].Lock) rel.Add(grid.Tiles[j]);
-                    }
-                }
-                for (int j = 0; j < grid.Tiles.Count; j++) grid.Tiles[j].Lock = false;
                 if (!Attempt(rel, 0, true, grid.RemainingBombs - 1, 20))
                 {
                     //Console.WriteLine("Clear: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
-                    return 10;
+                    return 1;
                 }
                 //Console.WriteLine();
                 if (!Attempt(rel, 0, false, grid.RemainingBombs, 20))
                 {
                     //Console.WriteLine("Bomb: " + (i + 1) + " " + (i + 1) + " rel: " + rel.Count);
                     grid.RevealTile(t, false);
-                    return 10;
+                    return 1;
                 }
                 //Console.WriteLine();
             }
+            
             return -1;
         }
 
