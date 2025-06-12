@@ -186,7 +186,7 @@ function initSquareTriHexGrid(){
     }
     for(let i=0;i<height-1;i++){
         let row=[];
-        for(let j=0;j<width/2;j++){
+        for(let j=0;j<floor(width/2);j++){
             let t={bomb:0,revealed:0,known:0,tAdj:0,eAdj:0,tBomb:0,rBomb:0,adj:[],hl:false};
             if(data.bombs[i*floor(width/2)+j+offset]=='1')t.bomb=1;
             if(data.revealed[i*floor(width/2)+j+offset]=='1'){
